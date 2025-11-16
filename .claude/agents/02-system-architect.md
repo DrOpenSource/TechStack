@@ -101,7 +101,7 @@ graph TD
 
 ## 📝 Example Output
 
-### **Feature:** "Weekly Weight Logging System"
+### **Feature:** "Weekly Data Logging System"
 
 ---
 
@@ -109,89 +109,84 @@ graph TD
 
 ```sql
 -- ============================================
--- MEMBERS TABLE
+-- USERS TABLE
 -- ============================================
-CREATE TABLE members (
+CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  gym_id UUID NOT NULL REFERENCES gyms(id) ON DELETE CASCADE,
+  organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   phone VARCHAR(15) UNIQUE NOT NULL,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(255),
-  height_cm DECIMAL(5,2),
   date_of_birth DATE,
-  gender VARCHAR(10) CHECK (gender IN ('male', 'female', 'other')),
-  diet_preference VARCHAR(20) CHECK (diet_preference IN ('veg', 'non-veg', 'vegan')),
-  goal VARCHAR(50) CHECK (goal IN ('fat_loss', 'muscle_gain', 'fitness_improvement')),
-  target_weight_kg DECIMAL(5,2),
+  preferences JSONB,
+  goals TEXT[],
   profile_photo_url TEXT,
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Index for fast gym member lookups
-CREATE INDEX idx_members_gym_id ON members(gym_id) WHERE is_active = true;
-CREATE INDEX idx_members_phone ON members(phone);
+-- Index for fast organization user lookups
+CREATE INDEX idx_users_organization_id ON users(organization_id) WHERE is_active = true;
+CREATE INDEX idx_users_phone ON users(phone);
 
 -- Row-level security (Supabase)
-ALTER TABLE members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
--- Policy: Members can only view their own data
-CREATE POLICY "Members view own data" ON members
+-- Policy: Users can only view their own data
+CREATE POLICY "Users view own data" ON users
   FOR SELECT USING (auth.uid() = id);
 
--- Policy: Gym owners can view their gym's members
-CREATE POLICY "Gym owners view members" ON members
+-- Policy: Organization admins can view their organization's users
+CREATE POLICY "Admins view users" ON users
   FOR SELECT USING (
-    gym_id IN (
-      SELECT id FROM gyms WHERE owner_id = auth.uid()
+    organization_id IN (
+      SELECT id FROM organizations WHERE owner_id = auth.uid()
     )
   );
 
 -- ============================================
--- WEIGH-INS TABLE
+-- DATA ENTRIES TABLE
 -- ============================================
-CREATE TABLE weigh_ins (
+CREATE TABLE data_entries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
-  program_id UUID REFERENCES programs(id) ON DELETE SET NULL,
-  weight_kg DECIMAL(5,2) NOT NULL CHECK (weight_kg BETWEEN 30 AND 300),
-  body_fat_percentage DECIMAL(4,2) CHECK (body_fat_percentage BETWEEN 3 AND 60),
-  chest_cm DECIMAL(5,2),
-  waist_cm DECIMAL(5,2),
-  hips_cm DECIMAL(5,2),
-  week_number INT, -- Program week (1-12)
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  project_id UUID REFERENCES projects(id) ON DELETE SET NULL,
+  value DECIMAL(10,2) NOT NULL,
+  unit VARCHAR(20),
+  metadata JSONB,
+  week_number INT, -- Project week (1-12)
   notes TEXT,
   logged_at TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Indexes for performance
-CREATE INDEX idx_weigh_ins_member ON weigh_ins(member_id, logged_at DESC);
-CREATE INDEX idx_weigh_ins_program ON weigh_ins(program_id, week_number);
+CREATE INDEX idx_data_entries_user ON data_entries(user_id, logged_at DESC);
+CREATE INDEX idx_data_entries_project ON data_entries(project_id, week_number);
 
--- Prevent duplicate weigh-ins on same day
-CREATE UNIQUE INDEX idx_weigh_ins_unique_daily ON weigh_ins(
-  member_id,
+-- Prevent duplicate entries on same day
+CREATE UNIQUE INDEX idx_data_entries_unique_daily ON data_entries(
+  user_id,
   DATE(logged_at)
 );
 
 -- Row-level security
-ALTER TABLE weigh_ins ENABLE ROW LEVEL SECURITY;
+ALTER TABLE data_entries ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Members view own weigh-ins" ON weigh_ins
+CREATE POLICY "Users view own data entries" ON data_entries
   FOR SELECT USING (
-    member_id IN (
-      SELECT id FROM members WHERE auth.uid() = id
+    user_id IN (
+      SELECT id FROM users WHERE auth.uid() = id
     )
   );
 
 -- ============================================
--- PROGRAMS TABLE
+-- PROJECTS TABLE
 -- ============================================
-CREATE TABLE programs (
+CREATE TABLE projects (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  gym_id UUID NOT NULL REFERENCES gyms(id) ON DELETE CASCADE,
+  organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name VARCHAR(100) NOT NULL,
   duration_weeks INT NOT NULL CHECK (duration_weeks IN (4, 8, 12)),
   start_date DATE NOT NULL,
@@ -202,28 +197,28 @@ CREATE TABLE programs (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_programs_gym ON programs(gym_id, status);
+CREATE INDEX idx_projects_organization ON projects(organization_id, status);
 
 -- ============================================
--- PROGRAM ENROLLMENTS
+-- PROJECT ENROLLMENTS
 -- ============================================
-CREATE TABLE program_enrollments (
+CREATE TABLE project_enrollments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  program_id UUID NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
-  member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
-  trainer_id UUID REFERENCES trainers(id) ON DELETE SET NULL,
-  baseline_weight_kg DECIMAL(5,2) NOT NULL,
-  target_weight_kg DECIMAL(5,2),
+  project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  staff_id UUID REFERENCES staff(id) ON DELETE SET NULL,
+  baseline_value DECIMAL(10,2),
+  target_value DECIMAL(10,2),
   enrolled_at TIMESTAMPTZ DEFAULT NOW(),
   completed_at TIMESTAMPTZ,
   status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'completed', 'dropped')),
 
   -- Prevent duplicate enrollments
-  UNIQUE(program_id, member_id)
+  UNIQUE(project_id, user_id)
 );
 
-CREATE INDEX idx_enrollments_member ON program_enrollments(member_id, status);
-CREATE INDEX idx_enrollments_program ON program_enrollments(program_id, status);
+CREATE INDEX idx_enrollments_user ON project_enrollments(user_id, status);
+CREATE INDEX idx_enrollments_project ON project_enrollments(project_id, status);
 ```
 
 **Design Decisions:**
@@ -245,25 +240,23 @@ CREATE INDEX idx_enrollments_program ON program_enrollments(program_id, status);
 // ============================================
 
 /**
- * POST /api/v1/weigh-ins
- * Create a new weigh-in entry
+ * POST /api/v1/data-entries
+ * Create a new data entry
  */
-interface CreateWeighInRequest {
-  member_id: string;          // UUID
-  program_id?: string;         // UUID (optional)
-  weight_kg: number;           // Required
-  body_fat_percentage?: number;
-  chest_cm?: number;
-  waist_cm?: number;
-  hips_cm?: number;
+interface CreateDataEntryRequest {
+  user_id: string;          // UUID
+  project_id?: string;      // UUID (optional)
+  value: number;            // Required
+  unit?: string;
+  metadata?: object;
   notes?: string;
 }
 
-interface CreateWeighInResponse {
+interface CreateDataEntryResponse {
   success: boolean;
   data: {
     id: string;
-    weight_kg: number;
+    value: number;
     logged_at: string;
     week_number: number | null;
   };
@@ -272,44 +265,44 @@ interface CreateWeighInResponse {
 
 // Auth: Required (JWT)
 // Rate Limit: 10 requests/minute
-// Validation: Weight must be 30-300 kg
+// Validation: Value must be within reasonable range
 
 /**
- * GET /api/v1/weigh-ins/history
- * Get member's weigh-in history
+ * GET /api/v1/data-entries/history
+ * Get user's data entry history
  */
-interface GetWeighInHistoryRequest {
-  member_id: string;
-  program_id?: string;         // Filter by program
+interface GetDataHistoryRequest {
+  user_id: string;
+  project_id?: string;         // Filter by project
   from_date?: string;          // ISO date
   to_date?: string;            // ISO date
   limit?: number;              // Default 50, max 100
 }
 
-interface GetWeighInHistoryResponse {
+interface GetDataHistoryResponse {
   success: boolean;
   data: {
-    weigh_ins: Array<{
+    entries: Array<{
       id: string;
-      weight_kg: number;
-      body_fat_percentage: number | null;
+      value: number;
+      unit: string | null;
       logged_at: string;
       week_number: number | null;
-      weight_change_kg: number | null;  // Compared to previous entry
+      change: number | null;  // Compared to previous entry
     }>;
     total_count: number;
-    baseline_weight: number | null;
-    current_weight: number | null;
-    total_change_kg: number | null;
+    baseline_value: number | null;
+    current_value: number | null;
+    total_change: number | null;
   };
 }
 
 /**
- * GET /api/v1/trainer/check-in-status
- * Get check-in status for all assigned members
+ * GET /api/v1/staff/check-in-status
+ * Get check-in status for all assigned users
  */
 interface GetCheckInStatusRequest {
-  trainer_id: string;
+  staff_id: string;
   week_start?: string;         // ISO date, default: current week
 }
 
@@ -318,16 +311,16 @@ interface GetCheckInStatusResponse {
   data: {
     week_start: string;
     week_end: string;
-    members: Array<{
-      member_id: string;
-      member_name: string;
-      last_weigh_in: string | null;
+    users: Array<{
+      user_id: string;
+      user_name: string;
+      last_entry: string | null;
       checked_in_this_week: boolean;
-      current_weight_kg: number | null;
+      current_value: number | null;
       week_number: number;
     }>;
     stats: {
-      total_members: number;
+      total_users: number;
       checked_in: number;
       missed: number;
       completion_rate: number;  // Percentage
@@ -412,20 +405,20 @@ CREATE POLICY "Trainers access own gym data" ON members
     )
   );
 
-// Frontend automatically includes gym context
+// Frontend automatically includes organization context
 interface AppContext {
-  gym_id: string;          // Set during auth
+  organization_id: string;          // Set during auth
   user_id: string;
-  user_role: 'owner' | 'trainer' | 'member';
+  user_role: 'admin' | 'staff' | 'user';
 }
 
-// All API calls include gym_id validation
-async function getMembers(gym_id: string) {
-  // Supabase RLS ensures user can only access their gym's data
+// All API calls include organization_id validation
+async function getUsers(organization_id: string) {
+  // Supabase RLS ensures user can only access their organization's data
   const { data } = await supabase
-    .from('members')
+    .from('users')
     .select('*')
-    .eq('gym_id', gym_id);  // Automatically validated by RLS
+    .eq('organization_id', organization_id);  // Automatically validated by RLS
 
   return data;
 }
@@ -452,15 +445,15 @@ interface AppState {
   auth: {
     user: User | null;
     token: string | null;
-    gym: Gym | null;
+    organization: Organization | null;
   };
-  member: {
-    profile: MemberProfile | null;
-    currentProgram: Program | null;
-    recentWeighIns: WeighIn[];
+  userData: {
+    profile: UserProfile | null;
+    currentProject: Project | null;
+    recentEntries: DataEntry[];
   };
   offline: {
-    pendingWeighIns: WeighIn[];
+    pendingEntries: DataEntry[];
     lastSyncedAt: Date | null;
   };
 }
@@ -468,12 +461,12 @@ interface AppState {
 // Context Structure
 contexts/
 ├── AuthContext.tsx       // Authentication state
-├── MemberContext.tsx     // Member profile & program
+├── UserContext.tsx       // User profile & project
 ├── OfflineContext.tsx    // Offline sync queue
 └── NotificationContext.tsx // Push notification state
 
 // Offline-First Strategy
-// 1. User logs weight → Save to IndexedDB immediately
+// 1. User logs data → Save to IndexedDB immediately
 // 2. Show in UI instantly (optimistic update)
 // 3. Queue for sync in background
 // 4. Sync when online, update with server response
@@ -490,14 +483,14 @@ contexts/
 
 // API Response Caching
 const cacheStrategy = {
-  // Member profile: Cache 1 hour
-  '/api/v1/members/:id': { ttl: 3600, staleWhileRevalidate: true },
+  // User profile: Cache 1 hour
+  '/api/v1/users/:id': { ttl: 3600, staleWhileRevalidate: true },
 
-  // Weigh-in history: Cache 5 minutes
-  '/api/v1/weigh-ins/history': { ttl: 300 },
+  // Data history: Cache 5 minutes
+  '/api/v1/data-entries/history': { ttl: 300 },
 
-  // Program details: Cache 30 minutes
-  '/api/v1/programs/:id': { ttl: 1800 },
+  // Project details: Cache 30 minutes
+  '/api/v1/projects/:id': { ttl: 1800 },
 };
 
 // Database Query Optimization

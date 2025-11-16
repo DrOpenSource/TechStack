@@ -3,7 +3,7 @@
 
 **Welcome to your AI-powered development team!**
 
-This guide will help you start building the Gym Transformation Tracker using your specialized AI agents.
+This guide will help you start building your project using specialized AI agents.
 
 ---
 
@@ -30,36 +30,36 @@ ls .claude/skills/
 
 Let's build your first feature using the agent team!
 
-### **Example: Implement Member Profile**
+### **Example: Implement User Profile**
 
 #### **Step 1: Planning**
 ```
-"Use product-architect to break down member profile feature into user stories"
+"Use product-architect to break down user profile feature into user stories"
 ```
 
 **Expected Output:**
 - User can create profile
 - User can view profile
 - User can edit profile
-- Profile includes: name, phone, height, weight, goal
+- Profile includes: name, email, phone, preferences
 
 ---
 
 #### **Step 2: Design**
 ```
-"Use system-architect to design member profile API and schema"
+"Use system-architect to design user profile API and schema"
 ```
 
 **Expected Output:**
-- Database schema for members table
-- API endpoints: GET /api/members/:id, PATCH /api/members/:id
+- Database schema for users table
+- API endpoints: GET /api/users/:id, PATCH /api/users/:id
 - Frontend component structure
 
 ---
 
 #### **Step 3: Implement Database**
 ```
-"Use database-engineer to create members table with profile fields"
+"Use database-engineer to create users table with profile fields"
 ```
 
 **Expected Output:**
@@ -71,12 +71,12 @@ Let's build your first feature using the agent team!
 
 #### **Step 4: Implement Backend**
 ```
-"Use backend-dev to build member profile API endpoints"
+"Use backend-dev to build user profile API endpoints"
 ```
 
 **Expected Output:**
-- GET /api/members/:id endpoint
-- PATCH /api/members/:id endpoint
+- GET /api/users/:id endpoint
+- PATCH /api/users/:id endpoint
 - Input validation
 - Error handling
 
@@ -84,7 +84,7 @@ Let's build your first feature using the agent team!
 
 #### **Step 5: Implement Frontend**
 ```
-"Use frontend-dev to build member profile components"
+"Use frontend-dev to build user profile components"
 ```
 
 **Expected Output:**
@@ -97,7 +97,7 @@ Let's build your first feature using the agent team!
 
 #### **Step 6: Test**
 ```
-"Use qa-engineer to create tests for member profile feature"
+"Use qa-engineer to create tests for user profile feature"
 ```
 
 **Expected Output:**
@@ -109,7 +109,7 @@ Let's build your first feature using the agent team!
 
 #### **Step 7: Review**
 ```
-"Use code-reviewer to review member profile implementation"
+"Use code-reviewer to review user profile implementation"
 ```
 
 **Expected Output:**
@@ -121,7 +121,7 @@ Let's build your first feature using the agent team!
 
 #### **Step 8: Deploy**
 ```
-"Use devops-agent to deploy member profile feature to staging"
+"Use devops-agent to deploy user profile feature to staging"
 ```
 
 **Expected Output:**
@@ -135,7 +135,7 @@ Let's build your first feature using the agent team!
 
 ### **Starting Phase 1**
 ```
-1. "Use product-architect to analyze Phase 1 from GTT PRD"
+1. "Use product-architect to analyze Phase 1 from Product PRD"
 2. "Use system-architect to design Phase 1 architecture"
 3. "Use database-engineer to implement Phase 1 schema"
 4. Then proceed with feature-by-feature implementation
@@ -183,11 +183,11 @@ Let's build your first feature using the agent team!
 | Set up authentication | `backend-dev` + `auth-setup` skill |
 | Set up PWA/offline | `frontend-dev` + `pwa-builder` skill |
 | Add charts/graphs | `frontend-dev` + `chart-builder` skill |
-| Integrate SMS provider | `integration-specialist` + `sms-integrator` skill |
+| Integrate third-party APIs | `integration-specialist` |
 | Create tests | `qa-engineer` |
 | Review code | `code-reviewer` |
 | Deploy | `devops-agent` |
-| Generate PDFs | `report-generator` |
+| Generate reports | `report-generator` |
 
 ---
 
@@ -196,17 +196,17 @@ Let's build your first feature using the agent team!
 ### **Tip 1: Work in Parallel**
 Agents can work simultaneously:
 ```
-"Use database-engineer to create weigh_ins table"
-"Use backend-dev to build weigh-in API"
-"Use frontend-dev to build weigh-in form"
+"Use database-engineer to create data_entries table"
+"Use backend-dev to build data entry API"
+"Use frontend-dev to build data entry form"
 
 All can work in parallel, then integrate!
 ```
 
 ### **Tip 2: Be Specific**
 ```
-❌ "Build member tracking"
-✅ "Use frontend-dev with chart-builder skill to create weight progress graph showing weekly data for the last 12 weeks"
+❌ "Build user tracking"
+✅ "Use frontend-dev with chart-builder skill to create progress graph showing weekly data for the last 12 weeks"
 ```
 
 ### **Tip 3: Iterate**
@@ -223,8 +223,8 @@ Better than: "Build authentication"
 ### **Tip 5: Check Dependencies**
 Some features need others first:
 ```
-✅ Authentication → Profile → Weigh-in → Dashboard
-❌ Dashboard → Weigh-in → Profile → Authentication
+✅ Authentication → Profile → Data Entry → Dashboard
+❌ Dashboard → Data Entry → Profile → Authentication
 ```
 
 ---
@@ -236,30 +236,30 @@ Some features need others first:
 1. "Use database-engineer to implement complete Phase 1 schema"
 2. "Use backend-dev with auth-setup to implement OTP authentication"
 3. "Use frontend-dev with pwa-builder to set up PWA structure"
-4. "Use integration-specialist with sms-integrator to set up Msg91"
+4. "Use integration-specialist to set up third-party integrations"
 ```
 
-### **Week 3-4: Member Features**
+### **Week 3-4: User Features**
 ```
-5. "Use backend-dev to build member profile API"
-6. "Use frontend-dev to build member profile UI"
-7. "Use backend-dev to build weigh-in API"
-8. "Use frontend-dev with chart-builder to build weight tracking UI"
-9. "Use backend-dev with reminder-system to implement daily reminders"
-```
-
-### **Week 4-5: Trainer Dashboard**
-```
-10. "Use backend-dev to build trainer dashboard API"
-11. "Use frontend-dev to build trainer dashboard UI"
-12. "Use frontend-dev with chart-builder to add member progress charts"
+5. "Use backend-dev to build user profile API"
+6. "Use frontend-dev to build user profile UI"
+7. "Use backend-dev to build data entry API"
+8. "Use frontend-dev with chart-builder to build data visualization UI"
+9. "Use backend-dev to implement notification system"
 ```
 
-### **Week 5-6: Owner Dashboard**
+### **Week 4-5: User Dashboard**
 ```
-13. "Use backend-dev to build owner dashboard API"
-14. "Use frontend-dev to build owner dashboard UI"
-15. "Use report-generator to implement transformation PDF reports"
+10. "Use backend-dev to build user dashboard API"
+11. "Use frontend-dev to build user dashboard UI"
+12. "Use frontend-dev with chart-builder to add progress charts"
+```
+
+### **Week 5-6: Admin Dashboard**
+```
+13. "Use backend-dev to build admin dashboard API"
+14. "Use frontend-dev to build admin dashboard UI"
+15. "Use report-generator to implement PDF reports"
 ```
 
 ### **Week 6: Testing & Deployment**
@@ -337,7 +337,7 @@ ls .claude/skills/
 ls .claude/workflows/
 
 # Start Phase 1
-"Use product-architect to analyze Phase 1 from GTT PRD"
+"Use product-architect to analyze Phase 1 from Product PRD"
 
 # Build a feature
 "Use [agent] with [skill] to [task]"
@@ -360,7 +360,7 @@ You now have a complete AI development team at your disposal. Start building!
 5. Deploy confidently (devops-agent)
 6. Monitor and iterate
 
-**Good luck building GTT! 🎯**
+**Good luck building your project! 🎯**
 
 ---
 

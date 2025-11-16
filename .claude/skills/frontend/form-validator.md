@@ -366,11 +366,11 @@ export const ageRule = z
   .min(13, 'You must be at least 13 years old')
   .max(120, 'Please enter a valid age');
 
-// Weight (kg)
-export const weightRule = z
+// Numeric value with range
+export const numericRangeRule = (min: number, max: number, label: string) => z
   .number()
-  .min(30, 'Weight must be at least 30 kg')
-  .max(300, 'Weight must be less than 300 kg');
+  .min(min, `${label} must be at least ${min}`)
+  .max(max, `${label} must be less than ${max}`);
 
 // Percentage
 export const percentageRule = z

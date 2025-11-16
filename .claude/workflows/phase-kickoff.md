@@ -15,7 +15,7 @@ Use this workflow when starting a new phase of development. It ensures all featu
 ### **Step 1: Feature Analysis**
 
 ```
-"Use product-architect to analyze Phase [X] from the GTT PRD"
+"Use product-architect to analyze Phase [X] from the Product PRD"
 ```
 
 **Output:**
@@ -71,12 +71,12 @@ Sprint 1: Foundation
   - Basic UI structure
 
 Sprint 2: Core Features
-  - Member tracking
-  - Weekly check-in
+  - User tracking
+  - Data collection
 
 Sprint 3: Dashboards
-  - PT dashboard
-  - Owner dashboard
+  - User dashboard
+  - Admin dashboard
 
 Sprint 4: Quality
   - Testing
@@ -133,19 +133,19 @@ Then proceed to core features using feature-development workflow.
 ## 📊 Example: Phase 1 Kickoff
 
 ### **PRD Phase 1 Features:**
-1. Member tracking & metrics
-2. Automated reminders
-3. PT dashboard
-4. Owner dashboard
-5. Program setup
-6. Weekly check-in
+1. User tracking & metrics
+2. Automated notifications
+3. User dashboard
+4. Admin dashboard
+5. Project setup
+6. Data collection
 7. Progress reports
 
 ---
 
 ### **Step 1: Analysis**
 ```
-"Use product-architect to break down Phase 1 from GTT PRD"
+"Use product-architect to break down Phase 1 from Product PRD"
 ```
 
 **Output:** 18 user stories across 7 feature groups
@@ -168,28 +168,28 @@ Then proceed to core features using feature-development workflow.
 ### **Step 3: Sprint Plan**
 
 **Sprint 1 (Week 1-2): Foundation**
-- Supabase setup
+- Database setup
 - Authentication (OTP)
-- Member profile
+- User profile
 - Multi-tenant setup
 - Basic UI shell
 
-**Sprint 2 (Week 3-4): Member Features**
-- Weekly weigh-in
-- Body metrics tracking
-- Progress graphs
-- Reminder preferences
+**Sprint 2 (Week 3-4): User Features**
+- Data entry
+- Data tracking
+- Progress visualization
+- Notification preferences
 
-**Sprint 3 (Week 4-5): Trainer Features**
-- PT dashboard
-- Member check-in status
+**Sprint 3 (Week 4-5): Dashboard Features**
+- User dashboard
+- Status monitoring
 - Weekly reports
-- Member alerts
+- User alerts
 
-**Sprint 4 (Week 5-6): Owner Features**
-- Owner dashboard
-- Program management
-- Member analytics
+**Sprint 4 (Week 5-6): Admin Features**
+- Admin dashboard
+- Project management
+- User analytics
 - Report generation
 
 **Sprint 5 (Week 6): Polish**
@@ -206,9 +206,9 @@ Then proceed to core features using feature-development workflow.
 ```
 
 **Created:**
-- gyms, members, trainers, programs tables
-- weigh_ins, body_metrics tables
-- reminder_preferences table
+- organizations, users, roles, projects tables
+- data_entries, metrics tables
+- notification_preferences table
 - RLS policies for all tables
 
 ---
@@ -216,7 +216,7 @@ Then proceed to core features using feature-development workflow.
 ### **Step 5: Start Building**
 ```
 "Use backend-dev with auth-setup to implement OTP authentication"
-"Use frontend-dev with pwa-builder to set up member PWA"
+"Use frontend-dev with pwa-builder to set up user PWA"
 ```
 
 Then continue with feature-development workflow for each feature.

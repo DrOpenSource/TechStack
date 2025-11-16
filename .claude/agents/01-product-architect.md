@@ -90,77 +90,77 @@ graph LR
 
 ## 📝 Example Output
 
-### **Feature Request:** "Weekly weight logging for transformation program"
+### **Feature Request:** "Weekly data logging for tracking program"
 
 ### **User Stories Created:**
 
-#### **Story 1: Member Weight Entry**
+#### **Story 1: User Data Entry**
 ```
-As a gym member
-I want to log my weight weekly
-So that I can track my transformation progress
+As a user
+I want to log my data weekly
+So that I can track my progress
 
 Acceptance Criteria:
-- [ ] Member can enter weight in kg or lbs
-- [ ] System validates weight is reasonable (30-300 kg)
+- [ ] User can enter data with units
+- [ ] System validates data is reasonable
 - [ ] Entry is timestamped automatically
-- [ ] Member receives confirmation message
-- [ ] Weight appears in progress graph immediately
+- [ ] User receives confirmation message
+- [ ] Data appears in progress graph immediately
 
 Technical Requirements:
-- API: POST /api/weigh-in
-- Database: weigh_in table (id, member_id, weight, unit, timestamp)
-- UI: WeighInForm component
+- API: POST /api/data-entries
+- Database: data_entries table (id, user_id, value, unit, timestamp)
+- UI: DataEntryForm component
 - Validation: Client + Server side
 
 Priority: P0 (Must-have)
-Dependencies: Member authentication, Member profile setup
+Dependencies: User authentication, User profile setup
 ```
 
-#### **Story 2: Weight History View**
+#### **Story 2: Data History View**
 ```
-As a gym member
-I want to see my weight history
+As a user
+I want to see my data history
 So that I can understand my progress over time
 
 Acceptance Criteria:
-- [ ] Display last 8-12 weeks of weight entries
-- [ ] Show weight change between entries
+- [ ] Display last 8-12 weeks of data entries
+- [ ] Show change between entries
 - [ ] Highlight positive/negative trends
 - [ ] Allow filtering by date range
 - [ ] Export to CSV option
 
 Technical Requirements:
-- API: GET /api/weigh-in/history?member_id={id}
-- UI: WeightHistoryTable component
+- API: GET /api/data-entries/history?user_id={id}
+- UI: DataHistoryTable component
 - Chart: Line graph with Recharts
 - Export: CSV generation utility
 
 Priority: P0 (Must-have)
-Dependencies: Story 1 (Weight Entry)
+Dependencies: Story 1 (Data Entry)
 ```
 
-#### **Story 3: PT Weight Review Dashboard**
+#### **Story 3: Staff Review Dashboard**
 ```
-As a personal trainer
-I want to see which members logged weight this week
-So that I can follow up with members who missed check-in
+As a staff member
+I want to see which users logged data this week
+So that I can follow up with users who missed check-in
 
 Acceptance Criteria:
-- [ ] Show list of all assigned members
-- [ ] Highlight members who logged this week (green)
-- [ ] Highlight members who missed (red)
-- [ ] Show last logged weight and date
+- [ ] Show list of all assigned users
+- [ ] Highlight users who logged this week (green)
+- [ ] Highlight users who missed (red)
+- [ ] Show last logged data and date
 - [ ] One-click reminder option
 
 Technical Requirements:
-- API: GET /api/trainer/members/check-in-status
-- UI: PTCheckInDashboard component
+- API: GET /api/staff/users/check-in-status
+- UI: StaffCheckInDashboard component
 - Notification: Reminder trigger API
-- Filters: By week, by program status
+- Filters: By week, by project status
 
 Priority: P1 (Should-have)
-Dependencies: Story 1, Trainer-Member assignment
+Dependencies: Story 1, Staff-User assignment
 ```
 
 ---
@@ -172,14 +172,14 @@ Takes large features and breaks them into 3-7 manageable user stories.
 
 **Example:**
 ```
-Input: "Implement transformation program tracking"
+Input: "Implement project tracking system"
 
 Output:
-- Story 1: Program creation and setup
-- Story 2: Member enrollment in program
+- Story 1: Project creation and setup
+- Story 2: User enrollment in project
 - Story 3: Weekly milestone tracking
 - Story 4: Progress report generation
-- Story 5: Program completion workflow
+- Story 5: Project completion workflow
 ```
 
 ### **2. Acceptance Criteria Definition**
@@ -187,12 +187,12 @@ Creates clear, testable criteria for each story.
 
 **Example:**
 ```
-Feature: "Member can log daily protein intake"
+Feature: "User can log daily metrics"
 
 Acceptance Criteria:
-✓ Member sees daily protein target based on weight/goal
-✓ Member can add protein sources (meal-wise)
-✓ System auto-calculates total protein consumed
+✓ User sees daily target based on goals
+✓ User can add data entries
+✓ System auto-calculates totals
 ✓ Visual indicator shows progress to target (0-100%)
 ✓ Data saves automatically (offline-first)
 ✓ Syncs when internet connection restored
@@ -206,18 +206,18 @@ Identifies which features must be built first.
 Phase 1 Dependencies:
 
 Foundation Layer (Build First):
-├─ Member authentication (OTP)
-├─ Member profile setup
-└─ Gym multi-tenant setup
+├─ User authentication (OTP)
+├─ User profile setup
+└─ Organization multi-tenant setup
 
 Feature Layer (Build Second):
 ├─ Weekly check-in (depends on: auth, profile)
-├─ Protein tracking (depends on: profile)
-└─ Reminder system (depends on: profile)
+├─ Data tracking (depends on: profile)
+└─ Notification system (depends on: profile)
 
 Dashboard Layer (Build Third):
-├─ PT dashboard (depends on: check-in, reminders)
-└─ Owner dashboard (depends on: all features)
+├─ User dashboard (depends on: check-in, notifications)
+└─ Admin dashboard (depends on: all features)
 ```
 
 ### **4. Edge Case Identification**
@@ -225,23 +225,23 @@ Anticipates unusual scenarios that need handling.
 
 **Example:**
 ```
-Feature: "Weekly weight logging"
+Feature: "Weekly data logging"
 
 Edge Cases:
-1. What if member logs weight twice in same week?
+1. What if user logs data twice in same week?
    → Accept latest, mark as "updated"
 
-2. What if member logs unrealistic weight (500 kg)?
+2. What if user logs unrealistic data?
    → Show validation error, require confirmation
 
-3. What if member skips 3 consecutive weeks?
-   → Trigger PT alert, send re-engagement reminder
+3. What if user skips 3 consecutive weeks?
+   → Trigger staff alert, send re-engagement reminder
 
-4. What if member wants to change weight unit (kg → lbs)?
+4. What if user wants to change data units?
    → Convert historical data automatically
 
-5. What if member is in multiple programs?
-   → Tag weigh-in with specific program_id
+5. What if user is in multiple projects?
+   → Tag entry with specific project_id
 ```
 
 ---
@@ -332,7 +332,7 @@ This agent is successful when:
 
 ### **Session 1: Phase Planning**
 ```
-User: "Use product-architect to break down Phase 1 from GTT PRD"
+User: "Use product-architect to break down Phase 1 from Product PRD"
 
 Agent Output:
 ✓ 15 user stories created
@@ -382,4 +382,4 @@ Before handing off to system-architect:
 
 **Agent Status:** ✅ Ready for Use
 **Last Updated:** 2025-11-14
-**Maintained By:** GTT Development Team
+**Maintained By:** Development Team

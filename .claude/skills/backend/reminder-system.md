@@ -1,17 +1,16 @@
-# ⏰ Reminder System Skill
+# ⏰ Scheduled Notification System Skill
 
 **Category:** Backend
-**Purpose:** Implement scheduled reminders for water, meals, protein, and weigh-ins
+**Purpose:** Implement scheduled notifications and reminders
 
 ---
 
 ## 🎯 What This Skill Does
 
-Creates automated reminder system:
-- Daily water reminders (customizable)
-- Meal reminders (breakfast, lunch, dinner)
-- Protein tracking reminders
-- Weekly weigh-in reminders
+Creates automated notification system:
+- Scheduled notifications (customizable timing)
+- Recurring reminders (daily, weekly, custom intervals)
+- User preference-based notifications
 - Uses Vercel Cron or external scheduler
 
 ---
@@ -25,7 +24,7 @@ Creates automated reminder system:
 {
   "crons": [
     {
-      "path": "/api/cron/hourly-reminders",
+      "path": "/api/cron/scheduled-notifications",
       "schedule": "0 * * * *"
     },
     {
@@ -36,10 +35,10 @@ Creates automated reminder system:
 }
 ```
 
-### **2. Reminder Endpoint**
+### **2. Notification Endpoint**
 
 ```typescript
-// api/cron/hourly-reminders/route.ts
+// api/cron/scheduled-notifications/route.ts
 
 export async function GET(request: Request) {
   // Verify cron secret
@@ -50,39 +49,39 @@ export async function GET(request: Request) {
   const currentHour = new Date().getHours();
   const currentDay = new Date().getDay();
 
-  // Get active members with reminder preferences
-  const { data: members } = await supabase
-    .from('members')
-    .select('id, phone, name, reminder_preferences')
+  // Get active users with notification preferences
+  const { data: users } = await supabase
+    .from('users')
+    .select('id, phone, name, notification_preferences')
     .eq('is_active', true);
 
-  for (const member of members || []) {
-    const prefs = member.reminder_preferences || {};
+  for (const user of users || []) {
+    const prefs = user.notification_preferences || {};
 
-    // Water reminders
-    if (prefs.water_enabled && prefs.water_times?.includes(currentHour)) {
-      await sendNotification(member.id, {
-        type: 'water',
-        title: 'Hydration Time! 💧',
-        body: 'Time to drink water. Stay hydrated!',
+    // Hourly notifications
+    if (prefs.hourly_enabled && prefs.hourly_times?.includes(currentHour)) {
+      await sendNotification(user.id, {
+        type: 'hourly',
+        title: prefs.hourly_title || 'Reminder',
+        body: prefs.hourly_message || 'Time for your scheduled activity!',
       });
     }
 
-    // Meal reminders
-    if (currentHour === 8 && prefs.breakfast) {
-      await sendNotification(member.id, {
-        type: 'meal',
-        title: 'Breakfast Time! 🍳',
-        body: 'Don\'t skip breakfast!',
+    // Daily notifications
+    if (currentHour === prefs.daily_time) {
+      await sendNotification(user.id, {
+        type: 'daily',
+        title: prefs.daily_title || 'Daily Reminder',
+        body: prefs.daily_message || 'Don\'t forget to complete your daily task!',
       });
     }
 
-    // Weekly weigh-in (Monday 9 AM)
-    if (currentDay === 1 && currentHour === 9) {
-      await sendNotification(member.id, {
-        type: 'weigh_in',
-        title: 'Weekly Check-In ⚖️',
-        body: 'Time to log your weight for this week!',
+    // Weekly notifications (configurable day and time)
+    if (currentDay === prefs.weekly_day && currentHour === prefs.weekly_time) {
+      await sendNotification(user.id, {
+        type: 'weekly',
+        title: prefs.weekly_title || 'Weekly Check-In',
+        body: prefs.weekly_message || 'Time for your weekly update!',
       });
     }
   }
@@ -93,12 +92,12 @@ export async function GET(request: Request) {
 
 ---
 
-## ✅ Reminder Types
+## ✅ Notification Types
 
-- 💧 **Water** - Hourly (customizable)
-- 🍳 **Meals** - Breakfast, Lunch, Dinner
-- 🥩 **Protein** - Evening reminder to log protein
-- ⚖️ **Weigh-In** - Weekly (Monday mornings)
+- ⏰ **Scheduled** - Time-based notifications
+- 🔄 **Recurring** - Daily, weekly, or custom intervals
+- 🎯 **Event-based** - Triggered by specific conditions
+- 📅 **Reminder** - User-configured reminders
 
 ---
 

@@ -53,7 +53,7 @@ export async function requestOTP(phone: string) {
   });
 
   // Send via SMS provider
-  await sendSMS(phone, `Your GTT OTP: ${otp}`);
+  await sendSMS(phone, `Your OTP: ${otp}`);
 
   return { success: true, expires_in: 300 };
 }
@@ -81,7 +81,7 @@ export async function verifyOTP(phone: string, otp: string) {
 
   // Get or create user
   let { data: user } = await supabase
-    .from('members')
+    .from('users')
     .select('*')
     .eq('phone', phone)
     .single();
@@ -89,7 +89,7 @@ export async function verifyOTP(phone: string, otp: string) {
   if (!user) {
     // Create new user
     const { data: newUser } = await supabase
-      .from('members')
+      .from('users')
       .insert({ phone })
       .select()
       .single();
@@ -99,7 +99,7 @@ export async function verifyOTP(phone: string, otp: string) {
   // Generate JWT token
   const token = await supabase.auth.admin.createUser({
     phone,
-    user_metadata: { member_id: user.id },
+    user_metadata: { user_id: user.id },
   });
 
   // Clear OTP session
