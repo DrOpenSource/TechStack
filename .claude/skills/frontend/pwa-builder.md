@@ -23,8 +23,8 @@ Transforms a web app into an installable, offline-capable PWA with:
 ```javascript
 // public/sw.js
 
-const CACHE_NAME = 'gtt-v1';
-const RUNTIME_CACHE = 'gtt-runtime';
+const CACHE_NAME = 'app-v1';
+const RUNTIME_CACHE = 'app-runtime';
 
 // Assets to cache on install
 const PRECACHE_URLS = [
@@ -87,9 +87,9 @@ self.addEventListener('fetch', (event) => {
 ```json
 // public/manifest.json
 {
-  "name": "Gym Transformation Tracker",
-  "short_name": "GTT",
-  "description": "Track your fitness transformation",
+  "name": "Your Application Name",
+  "short_name": "App",
+  "description": "Your application description",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -152,7 +152,7 @@ export function registerServiceWorker() {
 import localforage from 'localforage';
 
 const queue = localforage.createInstance({
-  name: 'gtt-offline-queue',
+  name: 'app-offline-queue',
 });
 
 export const offlineQueue = {

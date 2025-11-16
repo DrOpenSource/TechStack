@@ -1,13 +1,13 @@
 # 🛠️ Tech Stack Documentation
 
-**Project:** Gym Transformation Tracker (GTT)
+**Project:** AI Team Development Stack
 **Last Updated:** 2025-11-14
 
 ---
 
 ## 📋 Overview
 
-This document outlines all technology decisions for the GTT platform. These choices are optimized for rapid development, scalability, and cost-effectiveness for the Indian market.
+This document outlines all technology decisions for the platform. These choices are optimized for rapid development, scalability, and cost-effectiveness.
 
 ---
 
@@ -98,8 +98,8 @@ This document outlines all technology decisions for the GTT platform. These choi
 
 **State Management Strategy:**
 ```
-AuthContext → User authentication, gym context
-MemberContext → Member profile, program data
+AuthContext → User authentication, organization context
+UserContext → User profile, project data
 OfflineContext → Offline sync queue
 NotificationContext → Push notification state
 
@@ -295,7 +295,7 @@ Zustand Store → Complex offline sync logic
 ```json
 {
   "provider": "Supabase Storage",
-  "features": ["Image uploads", "PDFs", "Member photos"]
+  "features": ["Image uploads", "PDFs", "User documents"]
 }
 ```
 
@@ -315,7 +315,7 @@ Zustand Store → Complex offline sync logic
 
 ### **SMS Providers (Multiple Options)**
 
-#### **Option 1: Msg91 (Recommended for India)**
+#### **Option 1: Msg91**
 ```json
 {
   "provider": "Msg91",
@@ -325,10 +325,10 @@ Zustand Store → Complex offline sync logic
 ```
 
 **Why Msg91:**
-- ✅ India-focused
 - ✅ Reliable delivery
 - ✅ Good pricing
 - ✅ Easy API
+- ✅ Regional support
 
 ---
 
@@ -354,7 +354,7 @@ Zustand Store → Complex offline sync logic
 {
   "provider": "Fast2SMS",
   "pricing": "₹0.12/SMS",
-  "features": ["Cheap", "India-only"]
+  "features": ["Budget-friendly", "Regional"]
 }
 ```
 
@@ -367,7 +367,7 @@ Zustand Store → Complex offline sync logic
 
 ### **Payment Gateway (Future)**
 
-#### **Option 1: Razorpay (Recommended)**
+#### **Option 1: Razorpay**
 ```json
 {
   "provider": "Razorpay",
@@ -377,10 +377,10 @@ Zustand Store → Complex offline sync logic
 ```
 
 **Why Razorpay:**
-- ✅ India-focused
 - ✅ Easy integration
 - ✅ Subscription support
 - ✅ Good documentation
+- ✅ Regional payment methods
 
 ---
 
@@ -520,19 +520,19 @@ Sentry (Free): ₹0
 Total: ~₹4,700/month (~$57/month)
 ```
 
-### **Phase 2 (Scale - 10 gyms, 500 members)**
+### **Phase 2 (Scale - Small deployment)**
 ```
 Supabase Pro: ₹2,000
 Vercel Pro: ₹1,600
-Msg91 SMS: ₹3,000 (~20,000 OTPs + reminders)
+Msg91 SMS: ₹3,000 (~20,000 OTPs + notifications)
 Railway: ₹800 (for background jobs)
-Cloudflare R2: ₹400 (image storage)
+Cloudflare R2: ₹400 (file storage)
 Sentry Team: ₹2,000
 
 Total: ~₹9,800/month (~$120/month)
 ```
 
-### **Phase 3 (Scale - 100 gyms, 5,000 members)**
+### **Phase 3 (Scale - Large deployment)**
 ```
 Supabase Pro: ₹5,000 (larger database)
 Vercel Pro: ₹1,600
@@ -543,9 +543,6 @@ Sentry Team: ₹2,000
 
 Total: ~₹26,000/month (~$315/month)
 ```
-
-**Revenue:** 100 gyms × ₹999 = ₹99,900/month
-**Profit Margin:** ~74%
 
 ---
 

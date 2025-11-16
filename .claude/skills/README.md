@@ -25,7 +25,7 @@ Reusable capabilities that agents invoke to perform specific tasks.
 | `database-ops` | CRUD operations, query optimization | backend-dev, database-engineer |
 | `schema-designer` | Database schema creation, relationships | database-engineer, system-architect |
 | `reminder-system` | Scheduled notifications and cron jobs | backend-dev |
-| `multi-tenant-setup` | Gym-specific data isolation (RLS) | database-engineer, system-architect |
+| `multi-tenant-setup` | Organization-specific data isolation (RLS) | database-engineer, system-architect |
 
 ### **Integration Skills (4)**
 
