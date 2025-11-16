@@ -22,7 +22,7 @@ Reviews all code implementations to ensure quality, security (OWASP Top 10), per
 
 **Example:**
 ```
-"Use code-reviewer to review the weigh-in feature implementation"
+"Use code-reviewer to review the data entry feature implementation"
 "Use code-reviewer to check for security vulnerabilities"
 ```
 
@@ -98,11 +98,11 @@ Reviews all code implementations to ensure quality, security (OWASP Top 10), per
 #### Security
 - **HIGH**: Line 45 - SQL injection risk in raw query
   - Fix: Use parameterized queries or ORM
-  - File: `api/weigh-ins/route.ts:45`
+  - File: `api/data entrys/route.ts:45`
 
 - **MEDIUM**: Line 78 - Sensitive data in logs
   - Fix: Remove phone number from logs
-  - File: `api/weigh-ins/route.ts:78`
+  - File: `api/data entrys/route.ts:78`
 
 #### Performance
 - **MEDIUM**: Line 120 - N+1 query problem

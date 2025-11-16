@@ -23,8 +23,8 @@ Ensures code quality through unit tests, integration tests, end-to-end testing, 
 
 **Example:**
 ```
-"Use qa-engineer to create tests for weigh-in feature"
-"Use qa-engineer to test the member dashboard user flow"
+"Use qa-engineer to create tests for data entry feature"
+"Use qa-engineer to test the user dashboard user flow"
 ```
 
 ---
@@ -46,22 +46,22 @@ import { weighInService } from '@/services/weighInService';
 import { mockSupabase } from '@/lib/test-utils';
 
 describe('WeighIn Service', () => {
-  it('should create weigh-in successfully', async () => {
+  it('should create data entry successfully', async () => {
     const weighIn = {
-      member_id: 'test-member-id',
-      weight_kg: 75.5,
+      member_id: 'test-user-id',
+      value: 75.5,
     };
 
     const result = await weighInService.create(weighIn);
 
     expect(result).toHaveProperty('id');
-    expect(result.weight_kg).toBe(75.5);
+    expect(result.value).toBe(75.5);
   });
 
   it('should reject invalid weight', async () => {
     const weighIn = {
-      member_id: 'test-member-id',
-      weight_kg: 500, // Invalid
+      member_id: 'test-user-id',
+      value: 500, // Invalid
     };
 
     await expect(weighInService.create(weighIn)).rejects.toThrow();
@@ -75,8 +75,8 @@ describe('WeighIn Service', () => {
     });
 
     const weighIn = {
-      member_id: 'test-member-id',
-      weight_kg: 75.5,
+      member_id: 'test-user-id',
+      value: 75.5,
     };
 
     const result = await weighInService.create(weighIn);

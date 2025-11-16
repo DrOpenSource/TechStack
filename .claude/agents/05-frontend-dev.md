@@ -8,7 +8,7 @@
 
 ## 📋 Agent Overview
 
-The Frontend Developer Agent specializes in building Progressive Web App (PWA) experiences using React/Next.js. This agent creates responsive, accessible, and performant user interfaces optimized for mobile gym members and trainers.
+The Frontend Developer Agent specializes in building Progressive Web App (PWA) experiences using React/Next.js. This agent creates responsive, accessible, and performant user interfaces optimized for mobile users.
 
 ### **Core Responsibility**
 Transform designs and API specifications into working UI components and features.
@@ -30,10 +30,10 @@ Transform designs and API specifications into working UI components and features
 
 ### **Example Invocations**
 ```
-"Use frontend-dev to build the weekly weigh-in form component"
+"Use frontend-dev to build the data entry form component"
 "Use frontend-dev with pwa-builder skill to set up service worker"
-"Use frontend-dev with chart-builder skill to create weight progress graph"
-"Use frontend-dev to implement the member dashboard"
+"Use frontend-dev with chart-builder skill to create progress graph"
+"Use frontend-dev to implement the user dashboard"
 ```
 
 ---
@@ -322,7 +322,7 @@ export function WeighInForm({ programId, onSuccess }: WeighInFormProps) {
           {isLoading ? 'Logging...' : 'Log Weight'}
         </Button>
 
-        {/* Last weigh-in display */}
+        {/* Last data entry display */}
         {member?.lastWeighIn && (
           <div className="mt-4 p-3 bg-gray-50 rounded-lg">
             <p className="text-sm text-gray-600">
@@ -375,7 +375,7 @@ export interface WeighIn {
 
 export const weighInService = {
   /**
-   * Create a new weigh-in entry
+   * Create a new data entry entry
    * Supports offline mode via queue
    */
   async create(weighIn: WeighIn): Promise<WeighIn> {
@@ -412,7 +412,7 @@ export const weighInService = {
   },
 
   /**
-   * Get weigh-in history for a member
+   * Get data entry history 
    */
   async getHistory(
     memberId: string,
@@ -442,7 +442,7 @@ export const weighInService = {
   },
 
   /**
-   * Get latest weigh-in
+   * Get latest data entry
    */
   async getLatest(memberId: string): Promise<WeighIn | null> {
     const history = await this.getHistory(memberId, { limit: 1 });
@@ -465,7 +465,7 @@ export const weighInService = {
 ```typescript
 // public/service-worker.js
 
-const CACHE_NAME = 'gtt-v1';
+const CACHE_NAME = 'app-v1';
 const urlsToCache = [
   '/',
   '/styles/main.css',
@@ -513,15 +513,15 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Background sync for offline weigh-ins
+// Background sync for offline data entrys
 self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-weigh-ins') {
+  if (event.tag === 'sync-data entrys') {
     event.waitUntil(syncWeighIns());
   }
 });
 
 async function syncWeighIns() {
-  // Get pending weigh-ins from IndexedDB
+  // Get pending data entrys from IndexedDB
   // Send to server
   // Clear queue on success
 }
@@ -530,8 +530,8 @@ async function syncWeighIns() {
 ```json
 // public/manifest.json
 {
-  "name": "Gym Transformation Tracker",
-  "short_name": "GTT",
+  "name": "Application Platform",
+  "short_name": "App",
   "description": "Track your fitness transformation journey",
   "start_url": "/",
   "display": "standalone",

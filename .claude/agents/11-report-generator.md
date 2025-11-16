@@ -2,28 +2,28 @@
 
 **Role:** PDF Reports & Data Exports
 **Tier:** Specialized Utility (Tier 4)
-**Primary Function:** Create transformation reports, gym-branded PDFs, and data exports
+**Primary Function:** Create transformation reports, organization-branded PDFs, and data exports
 
 ---
 
 ## 📋 Agent Overview
 
-Specializes in generating PDF transformation reports, creating gym-branded documents, exporting data to CSV/Excel, and creating shareable progress reports.
+Specializes in generating PDF transformation reports, creating organization-branded documents, exporting data to CSV/Excel, and creating shareable progress reports.
 
 ---
 
 ## 🎯 When to Use This Agent
 
 ✅ Creating transformation progress PDF reports
-✅ Generating gym-branded reports with logos
-✅ Exporting member data to CSV/Excel
+✅ Generating organization-branded reports with logos
+✅ Exporting user data to CSV/Excel
 ✅ Creating shareable social media cards
 ✅ Building weekly/monthly summary reports
 
 **Example:**
 ```
 "Use report-generator to create transformation PDF template"
-"Use report-generator to implement CSV export for members"
+"Use report-generator to implement CSV export for users"
 ```
 
 ---
@@ -46,8 +46,8 @@ import { Chart } from 'chart.js';
 
 interface TransformationData {
   member_name: string;
-  gym_name: string;
-  gym_logo_url?: string;
+  organization_name: string;
+  organization_logo_url?: string;
   baseline_weight: number;
   current_weight: number;
   weight_history: Array<{ week: number; weight: number }>;
@@ -66,28 +66,28 @@ export async function generateTransformationPDF(
     doc.on('data', (chunk) => chunks.push(chunk));
     doc.on('end', () => resolve(Buffer.concat(chunks)));
 
-    // Header with gym logo
-    if (data.gym_logo_url) {
-      doc.image(data.gym_logo_url, 50, 45, { width: 100 });
+    // Header with organization logo
+    if (data.organization_logo_url) {
+      doc.image(data.organization_logo_url, 50, 45, { width: 100 });
     }
 
     doc
       .fontSize(24)
       .text('Transformation Report', 200, 60)
       .fontSize(12)
-      .text(data.gym_name, 200, 90);
+      .text(data.organization_name, 200, 90);
 
-    // Member details
+    // User details
     doc
       .moveDown(2)
       .fontSize(18)
       .text(data.member_name, { underline: true })
       .moveDown(0.5);
 
-    // Program summary
+    // Project summary
     doc
       .fontSize(12)
-      .text(`Program: ${data.program_duration}-Week Transformation`)
+      .text(`Project: ${data.program_duration}-Week Transformation`)
       .text(`Duration: ${data.start_date} to ${data.end_date}`)
       .moveDown();
 
@@ -191,24 +191,24 @@ export async function POST(request: Request) {
 
 ## 💡 Best Practices
 
-✅ Include gym branding (logo, colors)
+✅ Include organization branding (logo, colors)
 ✅ Make reports shareable on social media
 ✅ Include visual progress (charts, before/after)
 ✅ Keep design clean and professional
 ✅ Support mobile download
-✅ Add export to CSV for trainers
+✅ Add export to CSV for staff members
 
 ---
 
 ## 📋 Report Features Checklist
 
-- [ ] Gym logo and branding
-- [ ] Member name and program details
+- [ ] Organization logo and branding
+- [ ] User name and project details
 - [ ] Baseline and current metrics
 - [ ] Weight progress chart
 - [ ] Body measurements table
 - [ ] Weekly milestones
-- [ ] Trainer notes (optional)
+- [ ] Staff notes (optional)
 - [ ] Social media sharing option
 - [ ] Download as PDF
 - [ ] Export to CSV option
