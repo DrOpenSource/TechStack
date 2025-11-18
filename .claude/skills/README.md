@@ -6,6 +6,12 @@ Reusable capabilities that agents invoke to perform specific tasks.
 
 ## 📂 Skills by Category
 
+### **Development Skills (1)**
+
+| Skill | Purpose | Primary Agents |
+|-------|---------|----------------|
+| `mock-first-development` | Build functional demos without backend dependencies | All agents |
+
 ### **Frontend Skills (5)**
 
 | Skill | Purpose | Primary Agents |
@@ -94,10 +100,10 @@ When you need a new capability:
 
 ## ✅ Status
 
-**Skills Documented:** 20
-**Categories:** 5
+**Skills Documented:** 21
+**Categories:** 6
 **Ready for Use:** ✅ All skills
 
 ---
 
-**Last Updated:** 2025-11-14
+**Last Updated:** 2025-11-18
