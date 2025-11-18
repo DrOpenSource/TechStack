@@ -29,7 +29,7 @@ Design the technical blueprint that implementation agents will follow.
 ### **Example Invocations**
 ```
 "Use system-architect to design the database schema for Phase 1"
-"Use system-architect to define the API structure for member tracking"
+"Use system-architect to define the API structure for user tracking"
 "Use system-architect to plan the multi-tenant data isolation strategy"
 "Use system-architect to design the authentication flow"
 ```
@@ -344,7 +344,7 @@ interface GetCheckInStatusResponse {
 
 ```mermaid
 sequenceDiagram
-    participant M as Member (PWA)
+    participant M as User (PWA)
     participant API as Backend API
     participant S as Supabase Auth
     participant SMS as SMS Provider
@@ -368,7 +368,7 @@ sequenceDiagram
 
     Note over M: Store token in localStorage
 
-    M->>API: GET /api/v1/weigh-ins
+    M->>API: GET /api/v1/data entrys
     Note over M,API: Header: Authorization: Bearer {token}
 
     API->>API: Validate JWT
@@ -393,14 +393,14 @@ sequenceDiagram
  * Data Isolation Strategy
  */
 
-// Every query automatically filtered by gym_id
+// Every query automatically filtered by organization_id
 // Implemented via Supabase Row-Level Security
 
-// Example: Trainer can only see their gym's members
-CREATE POLICY "Trainers access own gym data" ON members
+// Example: Staff can only see their organization's users
+CREATE POLICY "Trainers access own organization data" ON users
   FOR ALL USING (
-    gym_id IN (
-      SELECT gym_id FROM trainers
+    organization_id IN (
+      SELECT organization_id FROM staff members
       WHERE user_id = auth.uid()
     )
   );
@@ -426,9 +426,9 @@ async function getUsers(organization_id: string) {
 
 **Isolation Guarantees:**
 - ✅ Database-level isolation (RLS policies)
-- ✅ API-level validation (gym_id checks)
-- ✅ Frontend-level context (gym stored in auth)
-- ✅ No cross-gym data leaks possible
+- ✅ API-level validation (organization_id checks)
+- ✅ Frontend-level context (organization stored in auth)
+- ✅ No cross-organization data leaks possible
 
 ---
 
@@ -512,7 +512,7 @@ const cacheStrategy = {
 
 - `schema-designer` - Database schema creation
 - `api-designer` - API endpoint structuring
-- `multi-tenant-setup` - Gym-specific data isolation
+- `multi-tenant-setup` - Organization-specific data isolation
 - `auth-setup` - Authentication flow design
 
 ---

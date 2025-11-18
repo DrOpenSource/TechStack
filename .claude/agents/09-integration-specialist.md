@@ -78,7 +78,7 @@ export async function sendOTPTwilio({ phone, otp }: SendOTPOptions) {
   const client = require('twilio')(accountSid, authToken);
 
   await client.messages.create({
-    body: `Your GTT OTP is: ${otp}. Valid for 5 minutes.`,
+    body: `Your Project OTP is: ${otp}. Valid for 5 minutes.`,
     from: process.env.TWILIO_PHONE_NUMBER,
     to: phone,
   });

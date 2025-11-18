@@ -11,7 +11,7 @@
 The Backend Developer Agent specializes in building RESTful APIs, implementing business logic, and managing server-side operations using Node.js and Supabase. This agent ensures data integrity, security, and optimal performance.
 
 ### **Core Responsibility**
-Implement backend services that power the GTT platform.
+Implement backend services that power the application platform.
 
 ---
 
@@ -29,10 +29,10 @@ Implement backend services that power the GTT platform.
 
 ### **Example Invocations**
 ```
-"Use backend-dev to implement the weigh-in API endpoints"
+"Use backend-dev to implement the data entry API endpoints"
 "Use backend-dev with auth-setup skill to build OTP authentication"
-"Use backend-dev with reminder-system skill to create daily reminders"
-"Use backend-dev to implement PT dashboard API"
+"Use backend-dev with notification-system skill to create scheduled notifications"
+"Use backend-dev to implement admin dashboard API"
 ```
 
 ---
@@ -58,8 +58,8 @@ Implement backend services that power the GTT platform.
 #### **2. Business Logic**
 ```typescript
 // Data processing
-// Calculations (BMI, protein targets, etc.)
-// Program enrollment logic
+// Calculations and aggregations
+// Project enrollment logic
 // Notification triggers
 ```
 
@@ -83,14 +83,14 @@ Implement backend services that power the GTT platform.
 
 ## 📝 Example Output
 
-### **Feature:** "Weekly Weigh-In API"
+### **Feature:** "Data Entry API"
 
 ---
 
 ### **1. API Route Implementation**
 
 ```typescript
-// api/weigh-ins/route.ts
+// api/data-entries/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
@@ -98,20 +98,18 @@ import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 // Validation schema
-const CreateWeighInSchema = z.object({
-  member_id: z.string().uuid(),
-  program_id: z.string().uuid().optional(),
-  weight_kg: z.number().min(30).max(300),
-  body_fat_percentage: z.number().min(3).max(60).optional(),
-  chest_cm: z.number().positive().optional(),
-  waist_cm: z.number().positive().optional(),
-  hips_cm: z.number().positive().optional(),
+const CreateDataEntrySchema = z.object({
+  user_id: z.string().uuid(),
+  project_id: z.string().uuid().optional(),
+  value: z.number(),
+  metric_type: z.string(),
+  metadata: z.record(z.any()).optional(),
   notes: z.string().max(500).optional(),
 });
 
 /**
- * POST /api/weigh-ins
- * Create a new weigh-in entry
+ * POST /api/data-entries
+ * Create a new data entry
  */
 export async function POST(request: NextRequest) {
   try {
@@ -132,22 +130,23 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request body
     const body = await request.json();
-    const validatedData = CreateWeighInSchema.parse(body);
+    const validatedData = CreateDataEntrySchema.parse(body);
 
-    // Verify member access (user can only log their own weight)
-    if (validatedData.member_id !== user.id) {
+    // Verify user access (user can only log their own data)
+    if (validatedData.user_id !== user.id) {
       return NextResponse.json(
-        { success: false, error: 'Forbidden: Can only log your own weight' },
+        { success: false, error: 'Forbidden: Can only log your own data' },
         { status: 403 }
       );
     }
 
-    // Check for duplicate on same day
+    // Check for duplicate on same day (if applicable)
     const today = new Date().toISOString().split('T')[0];
     const { data: existing } = await supabase
-      .from('weigh_ins')
+      .from('data_entries')
       .select('id')
-      .eq('member_id', validatedData.member_id)
+      .eq('user_id', validatedData.user_id)
+      .eq('metric_type', validatedData.metric_type)
       .gte('logged_at', `${today}T00:00:00`)
       .lt('logged_at', `${today}T23:59:59`)
       .single();
@@ -155,13 +154,10 @@ export async function POST(request: NextRequest) {
     if (existing) {
       // Update existing instead of creating new
       const { data, error } = await supabase
-        .from('weigh_ins')
+        .from('data_entries')
         .update({
-          weight_kg: validatedData.weight_kg,
-          body_fat_percentage: validatedData.body_fat_percentage,
-          chest_cm: validatedData.chest_cm,
-          waist_cm: validatedData.waist_cm,
-          hips_cm: validatedData.hips_cm,
+          value: validatedData.value,
+          metadata: validatedData.metadata,
           notes: validatedData.notes,
         })
         .eq('id', existing.id)
@@ -173,25 +169,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         data,
-        message: 'Weight updated successfully',
+        message: 'Data entry updated successfully',
       });
     }
 
-    // Calculate week number if in program
-    let weekNumber = null;
-    if (validatedData.program_id) {
-      weekNumber = await calculateProgramWeek(
+    // Calculate period number if in project
+    let periodNumber = null;
+    if (validatedData.project_id) {
+      periodNumber = await calculateProjectPeriod(
         supabase,
-        validatedData.program_id
+        validatedData.project_id
       );
     }
 
-    // Insert new weigh-in
+    // Insert new data entry
     const { data, error } = await supabase
-      .from('weigh_ins')
+      .from('data_entries')
       .insert({
         ...validatedData,
-        week_number: weekNumber,
+        period_number: periodNumber,
       })
       .select()
       .single();
@@ -199,18 +195,18 @@ export async function POST(request: NextRequest) {
     if (error) throw error;
 
     // Trigger notifications
-    await triggerWeighInNotifications(user.id, data);
+    await triggerDataEntryNotifications(user.id, data);
 
     return NextResponse.json(
       {
         success: true,
         data,
-        message: 'Weight logged successfully',
+        message: 'Data entry logged successfully',
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error('POST /api/weigh-ins error:', error);
+    console.error('POST /api/data-entries error:', error);
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -234,8 +230,8 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * GET /api/weigh-ins
- * Get weigh-in history
+ * GET /api/data-entries
+ * Get data entry history
  */
 export async function GET(request: NextRequest) {
   try {
@@ -256,14 +252,15 @@ export async function GET(request: NextRequest) {
 
     // Parse query parameters
     const { searchParams } = new URL(request.url);
-    const memberId = searchParams.get('member_id') || user.id;
-    const programId = searchParams.get('program_id');
+    const userId = searchParams.get('user_id') || user.id;
+    const projectId = searchParams.get('project_id');
+    const metricType = searchParams.get('metric_type');
     const limit = parseInt(searchParams.get('limit') || '50');
 
-    // Verify access (members can only see their own data)
-    if (memberId !== user.id) {
-      // Check if user is trainer/owner with access
-      const hasAccess = await verifyTrainerAccess(supabase, user.id, memberId);
+    // Verify access (users can only see their own data)
+    if (userId !== user.id) {
+      // Check if user is admin/staff with access
+      const hasAccess = await verifyStaffAccess(supabase, user.id, userId);
       if (!hasAccess) {
         return NextResponse.json(
           { success: false, error: 'Forbidden' },
@@ -274,33 +271,37 @@ export async function GET(request: NextRequest) {
 
     // Build query
     let query = supabase
-      .from('weigh_ins')
+      .from('data_entries')
       .select('*')
-      .eq('member_id', memberId)
+      .eq('user_id', userId)
       .order('logged_at', { ascending: false })
       .limit(limit);
 
-    if (programId) {
-      query = query.eq('program_id', programId);
+    if (projectId) {
+      query = query.eq('project_id', projectId);
     }
 
-    const { data: weighIns, error } = await query;
+    if (metricType) {
+      query = query.eq('metric_type', metricType);
+    }
+
+    const { data: dataEntries, error } = await query;
 
     if (error) throw error;
 
     // Calculate stats
-    const stats = calculateWeighInStats(weighIns);
+    const stats = calculateDataEntryStats(dataEntries);
 
     return NextResponse.json({
       success: true,
       data: {
-        weigh_ins: weighIns,
+        data_entries: dataEntries,
         stats,
-        total_count: weighIns.length,
+        total_count: dataEntries.length,
       },
     });
   } catch (error) {
-    console.error('GET /api/weigh-ins error:', error);
+    console.error('GET /api/data-entries error:', error);
 
     return NextResponse.json(
       {
@@ -312,71 +313,71 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Helper: Calculate program week
-async function calculateProgramWeek(supabase: any, programId: string) {
-  const { data: program } = await supabase
-    .from('programs')
+// Helper: Calculate project period
+async function calculateProjectPeriod(supabase: any, projectId: string) {
+  const { data: project } = await supabase
+    .from('projects')
     .select('start_date')
-    .eq('id', programId)
+    .eq('id', projectId)
     .single();
 
-  if (!program) return null;
+  if (!project) return null;
 
-  const startDate = new Date(program.start_date);
+  const startDate = new Date(project.start_date);
   const today = new Date();
   const diffTime = Math.abs(today.getTime() - startDate.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  const weekNumber = Math.ceil(diffDays / 7);
+  const periodNumber = Math.ceil(diffDays / 7);
 
-  return weekNumber;
+  return periodNumber;
 }
 
 // Helper: Trigger notifications
-async function triggerWeighInNotifications(userId: string, weighIn: any) {
-  // Notify assigned trainer
+async function triggerDataEntryNotifications(userId: string, dataEntry: any) {
+  // Notify assigned staff
   // Update streak
-  // Send encouragement if milestone reached
+  // Send notification if milestone reached
   // Implementation depends on notification system
 }
 
 // Helper: Calculate stats
-function calculateWeighInStats(weighIns: any[]) {
-  if (weighIns.length === 0) {
+function calculateDataEntryStats(dataEntries: any[]) {
+  if (dataEntries.length === 0) {
     return {
-      baseline_weight: null,
-      current_weight: null,
-      total_change_kg: null,
-      avg_weekly_change: null,
+      baseline_value: null,
+      current_value: null,
+      total_change: null,
+      avg_change_per_period: null,
     };
   }
 
-  const baseline = weighIns[weighIns.length - 1].weight_kg;
-  const current = weighIns[0].weight_kg;
+  const baseline = dataEntries[dataEntries.length - 1].value;
+  const current = dataEntries[0].value;
   const totalChange = current - baseline;
-  const weeks = weighIns.length;
-  const avgWeeklyChange = weeks > 1 ? totalChange / weeks : 0;
+  const periods = dataEntries.length;
+  const avgChangePerPeriod = periods > 1 ? totalChange / periods : 0;
 
   return {
-    baseline_weight: baseline,
-    current_weight: current,
-    total_change_kg: parseFloat(totalChange.toFixed(2)),
-    avg_weekly_change: parseFloat(avgWeeklyChange.toFixed(2)),
-    weeks_tracked: weeks,
+    baseline_value: baseline,
+    current_value: current,
+    total_change: parseFloat(totalChange.toFixed(2)),
+    avg_change_per_period: parseFloat(avgChangePerPeriod.toFixed(2)),
+    periods_tracked: periods,
   };
 }
 
-// Helper: Verify trainer access
-async function verifyTrainerAccess(
+// Helper: Verify staff access
+async function verifyStaffAccess(
   supabase: any,
-  trainerId: string,
-  memberId: string
+  staffId: string,
+  userId: string
 ): Promise<boolean> {
-  // Check if trainer is assigned to this member
+  // Check if staff is assigned to this user
   const { data } = await supabase
-    .from('program_enrollments')
-    .select('trainer_id')
-    .eq('member_id', memberId)
-    .eq('trainer_id', trainerId)
+    .from('project_enrollments')
+    .select('staff_id')
+    .eq('user_id', userId)
+    .eq('staff_id', staffId)
     .single();
 
   return !!data;
@@ -395,10 +396,10 @@ async function verifyTrainerAccess(
 
 ---
 
-### **2. Reminder System (Cron Jobs)**
+### **2. Notification System (Cron Jobs)**
 
 ```typescript
-// api/cron/daily-reminders/route.ts
+// api/cron/scheduled-notifications/route.ts
 
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
@@ -410,7 +411,7 @@ const supabase = createClient(
 );
 
 /**
- * Cron job: Send daily reminders
+ * Cron job: Send scheduled notifications
  * Triggered by Vercel Cron or external scheduler
  */
 export async function GET(request: Request) {
@@ -422,69 +423,61 @@ export async function GET(request: Request) {
     }
 
     const results = {
-      water_reminders: 0,
-      meal_reminders: 0,
-      protein_reminders: 0,
-      weigh_in_reminders: 0,
+      task_reminders: 0,
+      deadline_alerts: 0,
+      status_updates: 0,
+      recurring_notifications: 0,
     };
 
-    // Get all active members with reminder preferences
-    const { data: members } = await supabase
-      .from('members')
+    // Get all active users with notification preferences
+    const { data: users } = await supabase
+      .from('users')
       .select(
         `
         id,
         name,
+        email,
         phone,
-        reminder_preferences,
-        program_enrollments (
+        notification_preferences,
+        project_enrollments (
           id,
-          program_id,
+          project_id,
           status
         )
       `
       )
       .eq('is_active', true)
-      .eq('program_enrollments.status', 'active');
+      .eq('project_enrollments.status', 'active');
 
     const currentHour = new Date().getHours();
+    const currentDay = new Date().getDay();
 
-    for (const member of members || []) {
-      const prefs = member.reminder_preferences || {};
+    for (const user of users || []) {
+      const prefs = user.notification_preferences || {};
 
-      // Water reminder
-      if (prefs.water_enabled && prefs.water_times?.includes(currentHour)) {
-        await sendWaterReminder(member);
-        results.water_reminders++;
+      // Task reminders
+      if (prefs.task_reminders_enabled && prefs.reminder_times?.includes(currentHour)) {
+        await sendTaskReminder(user);
+        results.task_reminders++;
       }
 
-      // Meal reminders
-      if (prefs.meal_enabled) {
-        if (currentHour === 8 && prefs.breakfast_enabled) {
-          await sendMealReminder(member, 'breakfast');
-          results.meal_reminders++;
-        }
-        if (currentHour === 13 && prefs.lunch_enabled) {
-          await sendMealReminder(member, 'lunch');
-          results.meal_reminders++;
-        }
-        if (currentHour === 20 && prefs.dinner_enabled) {
-          await sendMealReminder(member, 'dinner');
-          results.meal_reminders++;
-        }
+      // Deadline alerts
+      if (prefs.deadline_alerts_enabled) {
+        await sendDeadlineAlerts(user);
+        results.deadline_alerts++;
       }
 
-      // Protein reminder (evening)
-      if (currentHour === 21 && prefs.protein_enabled) {
-        await sendProteinReminder(member);
-        results.protein_reminders++;
+      // Daily status update (morning)
+      if (currentHour === 9 && prefs.daily_digest_enabled) {
+        await sendDailyDigest(user);
+        results.status_updates++;
       }
 
-      // Weekly weigh-in reminder (Monday 9 AM)
-      const isMonday = new Date().getDay() === 1;
-      if (isMonday && currentHour === 9) {
-        await sendWeighInReminder(member);
-        results.weigh_in_reminders++;
+      // Weekly recap (Monday 9 AM)
+      const isMonday = currentDay === 1;
+      if (isMonday && currentHour === 9 && prefs.weekly_recap_enabled) {
+        await sendWeeklyRecap(user);
+        results.recurring_notifications++;
       }
     }
 
@@ -502,22 +495,22 @@ export async function GET(request: Request) {
   }
 }
 
-// Reminder functions
-async function sendWaterReminder(member: any) {
-  // Send push notification or SMS
+// Notification functions
+async function sendTaskReminder(user: any) {
+  // Send push notification or email
   // Implementation depends on notification provider
 }
 
-async function sendMealReminder(member: any, mealType: string) {
-  // Send meal reminder
+async function sendDeadlineAlerts(user: any) {
+  // Send deadline alerts for upcoming tasks
 }
 
-async function sendProteinReminder(member: any) {
-  // Send protein tracking reminder
+async function sendDailyDigest(user: any) {
+  // Send daily activity digest
 }
 
-async function sendWeighInReminder(member: any) {
-  // Send weekly weigh-in reminder
+async function sendWeeklyRecap(user: any) {
+  // Send weekly progress recap
 }
 ```
 
@@ -609,7 +602,7 @@ async function checkRateLimit(phone: string): Promise<number> {
 - `api-designer` - RESTful API structure
 - `auth-setup` - OTP authentication, JWT
 - `database-ops` - CRUD operations
-- `reminder-system` - Scheduled notifications
+- `notification-system` - Scheduled notifications
 
 ---
 
