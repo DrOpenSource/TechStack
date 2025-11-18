@@ -223,7 +223,7 @@ export function extractComponentName(code: string): string | null {
  */
 export function transformCode(code: string): string {
   // Remove TypeScript type annotations (basic)
-  let transformed = code
+  const transformed = code
     .replace(/:\s*\w+(\[\])?(\s*[=,\)])/g, '$2') // Remove type annotations
     .replace(/interface\s+\w+\s*{[^}]*}/g, '') // Remove interfaces
     .replace(/type\s+\w+\s*=[^;]+;/g, '') // Remove type aliases
