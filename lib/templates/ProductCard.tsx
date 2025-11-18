@@ -1,4 +1,6 @@
-function Component({ mockData = {} }) {
+import React from 'react';
+
+function Component({ mockData = {} }: { mockData?: any }) {
   const {
     products = [
       {
@@ -46,15 +48,15 @@ function Component({ mockData = {} }) {
   const [favorites, setFavorites] = React.useState([]);
   const [selectedProduct, setSelectedProduct] = React.useState(null);
 
-  const toggleFavorite = (productId) => {
-    setFavorites((prev) =>
+  const toggleFavorite = (productId: any) => {
+    setFavorites((prev: any) =>
       prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
+        ? prev.filter((id: any) => id !== productId)
         : [...prev, productId]
     );
   };
 
-  const addToCart = (product) => {
+  const addToCart = (product: any) => {
     alert(`Added "${product.name}" to cart!`);
   };
 
@@ -71,7 +73,7 @@ function Component({ mockData = {} }) {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => {
+          {products.map((product: any) => {
             const isFavorite = favorites.includes(product.id);
             const discount = product.originalPrice
               ? Math.round(
@@ -179,7 +181,7 @@ function Component({ mockData = {} }) {
                   {/* Rating */}
                   <div className="flex items-center mb-4">
                     <div className="flex items-center">
-                      {[1, 2, 3, 4, 5].map((star) => (
+                      {[1, 2, 3, 4, 5].map((star: any) => (
                         <svg
                           key={star}
                           className={`w-4 h-4 ${
@@ -327,3 +329,4 @@ function Component({ mockData = {} }) {
     </div>
   );
 }
+export default Component;

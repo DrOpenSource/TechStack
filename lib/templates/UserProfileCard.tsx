@@ -1,4 +1,6 @@
-function Component({ mockData = {} }) {
+import React from 'react';
+
+function Component({ mockData = {} }: { mockData?: any }) {
   const {
     name = "Sarah Johnson",
     role = "Senior Product Designer",
@@ -229,3 +231,4 @@ function Component({ mockData = {} }) {
     </div>
   );
 }
+export default Component;

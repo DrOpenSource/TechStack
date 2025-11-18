@@ -1,4 +1,6 @@
-function Component({ mockData = {} }) {
+import React from 'react';
+
+function Component({ mockData = {} }: { mockData?: any }) {
   const {
     title = "Revenue Analytics",
     period = "Last 7 Days",
@@ -21,7 +23,7 @@ function Component({ mockData = {} }) {
   } = mockData;
 
   const [selectedMetric, setSelectedMetric] = React.useState("revenue");
-  const maxRevenue = Math.max(...chartData.map((d) => d.revenue));
+  const maxRevenue = Math.max(...chartData.map((d: any) => d.revenue));
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
@@ -81,7 +83,7 @@ function Component({ mockData = {} }) {
           </div>
 
           {/* Metric Cards */}
-          {metrics.map((metric, index) => (
+          {metrics.map((metric: any, index: number) => (
             <div
               key={index}
               className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
@@ -175,12 +177,12 @@ function Component({ mockData = {} }) {
 
             {/* Chart area */}
             <div className="absolute left-16 right-0 top-0 bottom-8 flex items-end justify-between px-4">
-              {chartData.map((data, index) => {
+              {chartData.map((data: any, index: number) => {
                 const value = selectedMetric === "revenue" ? data.revenue : data.users;
                 const maxValue =
                   selectedMetric === "revenue"
                     ? maxRevenue
-                    : Math.max(...chartData.map((d) => d.users));
+                    : Math.max(...chartData.map((d: any) => d.users));
                 const height = (value / maxValue) * 100;
 
                 return (
@@ -211,7 +213,7 @@ function Component({ mockData = {} }) {
 
             {/* X-axis labels */}
             <div className="absolute left-16 right-0 bottom-0 flex items-center justify-between px-4 h-8">
-              {chartData.map((data, index) => (
+              {chartData.map((data: any, index: number) => (
                 <div
                   key={index}
                   className="flex-1 text-center text-sm text-gray-600 mx-1"
@@ -222,7 +224,7 @@ function Component({ mockData = {} }) {
             </div>
 
             {/* Grid lines */}
-            {[0, 25, 50, 75, 100].map((percent) => (
+            {[0, 25, 50, 75, 100].map((percent: any) => (
               <div
                 key={percent}
                 className="absolute left-16 right-0 border-t border-gray-200"
@@ -245,3 +247,4 @@ function Component({ mockData = {} }) {
     </div>
   );
 }
+export default Component;

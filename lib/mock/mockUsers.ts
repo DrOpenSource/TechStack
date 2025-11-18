@@ -77,8 +77,8 @@ const skillsList = ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'J
   'Docker', 'Kubernetes', 'AWS', 'Azure', 'MongoDB', 'PostgreSQL', 'GraphQL', 'REST API'];
 
 // Helper functions
-const randomItem = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
-const randomItems = <T>(arr: T[], count: number): T[] => {
+const randomItem = <T>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const randomItems = <T>(arr: readonly T[], count: number): T[] => {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 };

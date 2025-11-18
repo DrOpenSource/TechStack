@@ -128,17 +128,18 @@ export async function POST(request: NextRequest) {
       utils
     );
 
-    // Generate ZIP file
-    const zipBlob = await zip.generateAsync({ type: 'nodebuffer' });
+    // Generate ZIP file as arraybuffer for proper Response handling
+    const zipData = await zip.generateAsync({ type: 'arraybuffer' });
 
     const filename = `${exportOptions.projectName.toLowerCase().replace(/\s+/g, '-')}.zip`;
 
-    // Return ZIP file
-    return new NextResponse(zipBlob, {
+    // Return ZIP file using native Response (better for binary data)
+    return new Response(zipData, {
+      status: 200,
       headers: {
         'Content-Type': 'application/zip',
         'Content-Disposition': `attachment; filename="${filename}"`,
-        'Content-Length': zipBlob.length.toString(),
+        'Content-Length': zipData.byteLength.toString(),
       },
     });
   } catch (error) {

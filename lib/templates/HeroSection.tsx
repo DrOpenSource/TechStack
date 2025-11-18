@@ -1,4 +1,4 @@
-function Component({ mockData = {} }) {
+function Component({ mockData = {} }: { mockData?: any }) {
   const {
     title = "Build Amazing Products with AI",
     subtitle = "Accelerate your development with our cutting-edge AI agent framework",
@@ -131,7 +131,7 @@ function Component({ mockData = {} }) {
                 <div className="absolute -bottom-4 -left-4 bg-white p-4 rounded-xl shadow-lg transform -rotate-2">
                   <div className="flex items-center space-x-2">
                     <div className="flex -space-x-2">
-                      {[1, 2, 3].map((i) => (
+                      {[1, 2, 3].map((i: any) => (
                         <div
                           key={i}
                           className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full border-2 border-white"
@@ -154,3 +154,4 @@ function Component({ mockData = {} }) {
     </div>
   );
 }
+export default Component;
