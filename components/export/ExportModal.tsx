@@ -97,7 +97,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   // Don't render if not open
   if (!isOpen) return null;
 
-  const isExporting = progress && progress.stage !== 'complete' && progress.stage !== 'error';
+  const isExporting = !!(progress && progress.stage !== 'complete' && progress.stage !== 'error');
   const isComplete = progress?.stage === 'complete';
 
   return (

@@ -1,4 +1,6 @@
-function Component({ mockData = {} }) {
+import React from 'react';
+
+function Component({ mockData = {} }: { mockData?: any }) {
   const {
     title = "Welcome Back",
     subtitle = "Sign in to your account to continue",
@@ -14,7 +16,7 @@ function Component({ mockData = {} }) {
   const [rememberMe, setRememberMe] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     // Simulate API call
@@ -24,7 +26,7 @@ function Component({ mockData = {} }) {
     }, 1500);
   };
 
-  const handleSocialLogin = (provider) => {
+  const handleSocialLogin = (provider: string) => {
     alert(`${provider} login clicked (Demo)`);
   };
 
@@ -268,7 +270,7 @@ function Component({ mockData = {} }) {
             {allowSignup && (
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
                     Sign up for free
                   </a>
@@ -286,3 +288,4 @@ function Component({ mockData = {} }) {
     </div>
   );
 }
+export default Component;

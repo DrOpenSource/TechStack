@@ -139,7 +139,7 @@ export function TemplateGallery({
             No templates found
           </h3>
           <p className="mt-1 text-sm text-muted-foreground max-w-md">
-            Try adjusting your search or filters to find what you're looking
+            Try adjusting your search or filters to find what you&apos;re looking
             for.
           </p>
           <button

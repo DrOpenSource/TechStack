@@ -20,10 +20,12 @@ export type HapticPattern = keyof typeof HAPTIC_PATTERNS;
  * Trigger haptic feedback if supported by the device
  * @param pattern - The vibration pattern (number or array of numbers)
  */
-export function vibrate(pattern: number | number[]): void {
+export function vibrate(pattern: number | readonly number[]): void {
   if (typeof window !== "undefined" && "vibrate" in navigator) {
     try {
-      navigator.vibrate(pattern);
+      // Convert readonly arrays to mutable arrays for navigator.vibrate
+      const vibratePattern = typeof pattern === 'number' ? pattern : [...pattern];
+      navigator.vibrate(vibratePattern);
     } catch (error) {
       // Silently fail if vibration is not supported or blocked
       console.debug("Vibration not supported:", error);

@@ -1,12 +1,9 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import InstallPrompt from '@/components/pwa/InstallPrompt';
 import OfflineIndicator from '@/components/pwa/OfflineIndicator';
 import UpdatePrompt from '@/components/pwa/UpdatePrompt';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
@@ -56,7 +53,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
-      <body className={inter.className} suppressHydrationWarning>
+      <body className="font-sans antialiased" suppressHydrationWarning>
         <ThemeProvider defaultTheme="system">
           {children}
           <InstallPrompt />

@@ -1,4 +1,6 @@
-function Component({ mockData = {} }) {
+import React from 'react';
+
+function Component({ mockData = {} }: { mockData?: any }) {
   const {
     products = [
       {
@@ -43,18 +45,18 @@ function Component({ mockData = {} }) {
     ],
   } = mockData;
 
-  const [favorites, setFavorites] = React.useState([]);
-  const [selectedProduct, setSelectedProduct] = React.useState(null);
+  const [favorites, setFavorites] = React.useState<any[]>([]);
+  const [selectedProduct, setSelectedProduct] = React.useState<any>(null);
 
-  const toggleFavorite = (productId) => {
-    setFavorites((prev) =>
+  const toggleFavorite = (productId: any) => {
+    setFavorites((prev: any) =>
       prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
+        ? prev.filter((id: any) => id !== productId)
         : [...prev, productId]
     );
   };
 
-  const addToCart = (product) => {
+  const addToCart = (product: any) => {
     alert(`Added "${product.name}" to cart!`);
   };
 
@@ -71,7 +73,7 @@ function Component({ mockData = {} }) {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => {
+          {products.map((product: any) => {
             const isFavorite = favorites.includes(product.id);
             const discount = product.originalPrice
               ? Math.round(
@@ -161,7 +163,7 @@ function Component({ mockData = {} }) {
 
                   {/* Features */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {product.features.slice(0, 2).map((feature, index) => (
+                    {product.features.slice(0, 2).map((feature: any, index: number) => (
                       <span
                         key={index}
                         className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
@@ -179,7 +181,7 @@ function Component({ mockData = {} }) {
                   {/* Rating */}
                   <div className="flex items-center mb-4">
                     <div className="flex items-center">
-                      {[1, 2, 3, 4, 5].map((star) => (
+                      {[1, 2, 3, 4, 5].map((star: any) => (
                         <svg
                           key={star}
                           className={`w-4 h-4 ${
@@ -289,7 +291,7 @@ function Component({ mockData = {} }) {
                 <div>
                   <p className="text-gray-600 mb-4">{selectedProduct.description}</p>
                   <div className="space-y-2 mb-4">
-                    {selectedProduct.features.map((feature, index) => (
+                    {selectedProduct.features.map((feature: any, index: number) => (
                       <div key={index} className="flex items-center text-sm text-gray-700">
                         <svg
                           className="w-5 h-5 text-green-500 mr-2"
@@ -327,3 +329,4 @@ function Component({ mockData = {} }) {
     </div>
   );
 }
+export default Component;

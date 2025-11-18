@@ -30,7 +30,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
   const [isHovered, setIsHovered] = useState(false);
 
   // Determine button state
-  const isExporting = progress && progress.stage !== 'complete' && progress.stage !== 'error';
+  const isExporting = !!(progress && progress.stage !== 'complete' && progress.stage !== 'error');
   const isComplete = progress?.stage === 'complete';
   const isError = progress?.stage === 'error';
 
@@ -116,7 +116,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
     <div className={`relative ${className}`}>
       <button
         onClick={onClick}
-        disabled={disabled || isExporting}
+        disabled={!!disabled || isExporting}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={`
@@ -150,7 +150,7 @@ export const ExportFAB: React.FC<{
   onClick: () => void;
   progress?: ExportProgress | null;
 }> = ({ onClick, progress }) => {
-  const isExporting = progress && progress.stage !== 'complete' && progress.stage !== 'error';
+  const isExporting = !!(progress && progress.stage !== 'complete' && progress.stage !== 'error');
 
   return (
     <button

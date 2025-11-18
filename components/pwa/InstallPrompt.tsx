@@ -98,7 +98,7 @@ export default function InstallPrompt() {
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <span>Tap</span>
                   <Share className="w-4 h-4" />
-                  <span>then "Add to Home Screen"</span>
+                  <span>then &quot;Add to Home Screen&quot;</span>
                 </div>
               </div>
             ) : (
