@@ -11,7 +11,7 @@ function Component({ mockData = {} }: { mockData?: any }) {
     location = "San Francisco, CA",
     website = "sarahjohnson.design",
     followers = 2847,
-    following = 342,
+    following: followingCount = 342,
     posts = 127,
     isFollowing = false,
     badges = ["Verified", "Pro Member"],
@@ -59,7 +59,7 @@ function Component({ mockData = {} }: { mockData?: any }) {
                       {name}
                     </h1>
                     {/* Badges */}
-                    {badges.map((badge, index) => (
+                    {badges.map((badge: any, index: number) => (
                       <span
                         key={index}
                         className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
@@ -178,7 +178,7 @@ function Component({ mockData = {} }: { mockData?: any }) {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-900">
-                  {following.toLocaleString()}
+                  {followingCount.toLocaleString()}
                 </div>
                 <div className="text-sm text-gray-600">Following</div>
               </div>
@@ -192,7 +192,7 @@ function Component({ mockData = {} }: { mockData?: any }) {
 
             {/* Additional Stats */}
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {stats.map((stat, index) => (
+              {stats.map((stat: any, index: number) => (
                 <div
                   key={index}
                   className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 text-center"

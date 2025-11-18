@@ -45,8 +45,8 @@ function Component({ mockData = {} }: { mockData?: any }) {
     ],
   } = mockData;
 
-  const [favorites, setFavorites] = React.useState([]);
-  const [selectedProduct, setSelectedProduct] = React.useState(null);
+  const [favorites, setFavorites] = React.useState<any[]>([]);
+  const [selectedProduct, setSelectedProduct] = React.useState<any>(null);
 
   const toggleFavorite = (productId: any) => {
     setFavorites((prev: any) =>
@@ -163,7 +163,7 @@ function Component({ mockData = {} }: { mockData?: any }) {
 
                   {/* Features */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {product.features.slice(0, 2).map((feature, index) => (
+                    {product.features.slice(0, 2).map((feature: any, index: number) => (
                       <span
                         key={index}
                         className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
@@ -291,7 +291,7 @@ function Component({ mockData = {} }: { mockData?: any }) {
                 <div>
                   <p className="text-gray-600 mb-4">{selectedProduct.description}</p>
                   <div className="space-y-2 mb-4">
-                    {selectedProduct.features.map((feature, index) => (
+                    {selectedProduct.features.map((feature: any, index: number) => (
                       <div key={index} className="flex items-center text-sm text-gray-700">
                         <svg
                           className="w-5 h-5 text-green-500 mr-2"

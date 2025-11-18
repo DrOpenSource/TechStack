@@ -31,6 +31,8 @@ export function SwipeableCard({
     [-threshold * 1.5, -threshold, 0, threshold, threshold * 1.5],
     [0.5, 0.8, 1, 0.8, 0.5]
   );
+  const leftOpacity = useTransform(x, [0, -threshold], [0, 1]);
+  const rightOpacity = useTransform(x, [0, threshold], [0, 1]);
 
   const handleDragEnd = (
     event: MouseEvent | TouchEvent | PointerEvent,
@@ -101,11 +103,7 @@ export function SwipeableCard({
         <motion.div
           className="absolute top-0 right-0 bottom-0 w-24 flex items-center justify-center bg-destructive/20 rounded-l-lg pointer-events-none"
           style={{
-            opacity: useTransform(
-              x,
-              [0, -threshold],
-              [0, 1]
-            ),
+            opacity: leftOpacity,
           }}
         >
           <div className="text-destructive font-semibold text-sm">
@@ -118,11 +116,7 @@ export function SwipeableCard({
         <motion.div
           className="absolute top-0 left-0 bottom-0 w-24 flex items-center justify-center bg-green-500/20 rounded-r-lg pointer-events-none"
           style={{
-            opacity: useTransform(
-              x,
-              [0, threshold],
-              [0, 1]
-            ),
+            opacity: rightOpacity,
           }}
         >
           <div className="text-green-600 font-semibold text-sm">
