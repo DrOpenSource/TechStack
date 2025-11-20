@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Wand2, X } from "lucide-react";
-import type { ElementNode, EditableProp } from "@/packages/core/types";
+import type { ElementNode, EditableProp } from "@/lib/agents/context-gatherer/types";
 
 interface ElementInspectorProps {
   element: ElementNode | null;

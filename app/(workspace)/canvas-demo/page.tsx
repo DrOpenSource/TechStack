@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Code2, Eye, Layers, ChevronLeft, ChevronRight } from "lucide-react";
 import { InteractivePreview } from "@/app/components/canvas/InteractivePreview";
 import { ElementInspector } from "@/app/components/canvas/ElementInspector";
-import type { ElementNode } from "@/packages/core/types";
+import type { ElementNode } from "@/lib/agents/context-gatherer/types";
 
 // Mock component code for demo
 const DEMO_CODE = `

@@ -4,13 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Sparkles, Loader2, Code2, Eye } from "lucide-react";
 import { QuestionFlow } from "@/app/components/agent/QuestionFlow";
-import { ProactiveAgent } from "@/packages/core/agent/proactive-agent";
-import { mockProvider } from "@/packages/core/providers/mock-provider";
+import { ProactiveAgent } from "@/lib/agents/context-gatherer/agent/proactive-agent";
+import { mockProvider } from "@/lib/agents/context-gatherer/providers/mock-provider";
 import type {
   AgentResponse,
   QuestionFlow as QuestionFlowType,
   ConversationMessage,
-} from "@/packages/core/types";
+} from "@/lib/agents/context-gatherer/types";
 
 interface Message extends ConversationMessage {
   component?: "questions";

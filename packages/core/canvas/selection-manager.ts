@@ -219,7 +219,7 @@ export class SelectionManager {
    * Get element bounds
    */
   private getElementBounds(element: HTMLElement): Omit<ElementBounds, 'id' | 'element'> {
-    const rect = element.getBoundingRect();
+    const rect = element.getBoundingClientRect();
 
     return {
       x: rect.left,

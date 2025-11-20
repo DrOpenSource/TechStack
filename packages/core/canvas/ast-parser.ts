@@ -212,7 +212,7 @@ export class ASTParser {
       children: node.children.map(child =>
         typeof child === 'string' ? child : this.cloneNode(child)
       ),
-      metadata: { ...node.metadata },
+      metadata: node.metadata ? { ...node.metadata } : undefined,
     };
   }
 

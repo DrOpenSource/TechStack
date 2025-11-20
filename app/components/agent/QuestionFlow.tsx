@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
-import type { Question, QuestionFlow as QuestionFlowType } from "@/packages/core/types";
+import type { Question, QuestionFlow as QuestionFlowType } from "@/lib/agents/context-gatherer/types";
 
 interface QuestionFlowProps {
   flow: QuestionFlowType;

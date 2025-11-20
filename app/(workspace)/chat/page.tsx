@@ -6,7 +6,7 @@ import { Send, Sparkles, Loader2, Eye, Code2 } from "lucide-react";
 import { useChatStore } from "@/lib/stores/chat-store";
 import { useProjectStore } from "@/lib/stores/project-store";
 import { ChatMessage } from "@/components/chat/chat-message";
-import { QuestionFlow } from "@/components/agents/QuestionFlow";
+import { QuestionFlow } from "@/app/components/agent/QuestionFlow";
 import { ProactiveAgent } from "@/lib/agents/context-gatherer/agent/proactive-agent";
 import { mockProvider } from "@/lib/agents/context-gatherer/providers/mock-provider";
 import type { QuestionFlow as QuestionFlowType } from "@/lib/agents/context-gatherer/types";
@@ -218,17 +218,17 @@ export default function ChatPage() {
               <Sparkles className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              Let's build something amazing
+              Let&apos;s build something amazing
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Describe what you want to create. I'll ask clarifying questions to understand your vision.
+              Describe what you want to create. I&apos;ll ask clarifying questions to understand your vision.
             </p>
             <div className="text-xs text-muted-foreground text-left max-w-md mx-auto space-y-1">
               <p className="font-medium">Try saying:</p>
               <ul className="space-y-1 ml-4">
-                <li>• "Create a login form"</li>
-                <li>• "Build a dashboard"</li>
-                <li>• "Make a product card"</li>
+                <li>• &quot;Create a login form&quot;</li>
+                <li>• &quot;Build a dashboard&quot;</li>
+                <li>• &quot;Make a product card&quot;</li>
               </ul>
             </div>
           </motion.div>
@@ -271,14 +271,14 @@ export default function ChatPage() {
                   <div className="mt-3 space-y-2">
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => toggleCode(message.metadata.codeId)}
+                        onClick={() => toggleCode(message.metadata!.codeId!)}
                         className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
                       >
                         <Code2 className="w-4 h-4" />
-                        {showCode[message.metadata.codeId] ? "Hide Code" : "Show Code"}
+                        {showCode[message.metadata!.codeId!] ? "Hide Code" : "Show Code"}
                       </button>
                       <button
-                        onClick={() => openPreview(message.metadata.codeId)}
+                        onClick={() => openPreview(message.metadata!.codeId!)}
                         className="flex items-center gap-2 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
                       >
                         <Eye className="w-4 h-4" />
@@ -286,13 +286,13 @@ export default function ChatPage() {
                       </button>
                     </div>
 
-                    {showCode[message.metadata.codeId] && generatedCode[message.metadata.codeId] && (
+                    {showCode[message.metadata!.codeId!] && generatedCode[message.metadata!.codeId!] && (
                       <motion.pre
                         initial={{ height: 0 }}
                         animate={{ height: "auto" }}
                         className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-xs"
                       >
-                        <code>{generatedCode[message.metadata.codeId].code}</code>
+                        <code>{generatedCode[message.metadata!.codeId!].code}</code>
                       </motion.pre>
                     )}
                   </div>

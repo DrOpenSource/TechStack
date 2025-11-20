@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Smartphone, Tablet, Monitor, RotateCw, RefreshCw } from "lucide-react";
 import { createSelectionManager } from "@/packages/core/canvas/selection-manager";
-import type { SelectionState } from "@/packages/core/types";
+import type { SelectionState } from "@/lib/agents/context-gatherer/types";
 
 interface InteractivePreviewProps {
   code: string;
