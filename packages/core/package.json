@@ -1,0 +1,32 @@
+{
+  "name": "@vibecode/core",
+  "version": "0.1.0",
+  "description": "Core framework for VibeCode - AI-powered visual development",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./agent": "./agent/index.ts",
+    "./canvas": "./canvas/index.ts",
+    "./context": "./context/index.ts",
+    "./providers": "./providers/index.ts",
+    "./codegen": "./codegen/index.ts",
+    "./types": "./types/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.23.0",
+    "@babel/generator": "^7.23.0",
+    "@babel/traverse": "^7.23.0",
+    "@babel/types": "^7.23.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/babel__generator": "^7.6.8",
+    "@types/babel__traverse": "^7.20.5",
+    "typescript": "^5.3.0"
+  }
+}

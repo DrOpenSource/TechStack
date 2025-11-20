@@ -11,6 +11,8 @@ import {
   ChevronRight,
   LogOut,
   User,
+  Sparkles,
+  Layers,
 } from "lucide-react";
 import { useNavigationStore } from "@/lib/stores/navigationStore";
 import { useUserStore } from "@/lib/stores/user-store";
@@ -30,6 +32,16 @@ const navItems = [
     icon: Eye,
     label: "Preview",
     path: "/preview",
+  },
+  {
+    icon: Sparkles,
+    label: "Agent Demo",
+    path: "/agent-demo",
+  },
+  {
+    icon: Layers,
+    label: "Canvas Demo",
+    path: "/canvas-demo",
   },
   {
     icon: Settings,
