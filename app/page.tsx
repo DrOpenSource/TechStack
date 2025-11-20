@@ -1,14 +1,10 @@
 /**
- * Main App Page
- * Sample page demonstrating the chat interface
+ * Root Page - Redirects to appropriate route
  */
 
-import { ChatContainer } from '@/components/chat';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <main className="h-screen w-screen overflow-hidden">
-      <ChatContainer />
-    </main>
-  );
+  // Redirect to login page (auth check handled by layout)
+  redirect('/login');
 }
