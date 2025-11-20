@@ -19,7 +19,7 @@ cat .claude/docs/NEW_PROJECT_SETUP.md
 
 ### Framework Components
 
-- **13 Specialized Agents** - Product, architecture, development, testing, deployment
+- **14 Specialized Agents** - Product, architecture, development, testing, deployment, context gathering
 - **21 Reusable Skills** - Auth, payments, charts, forms, PWA, and more
 - **Complete Documentation** - Setup guides, customization, best practices
 
@@ -57,6 +57,7 @@ cat .claude/docs/NEW_PROJECT_SETUP.md
 | 10 | DevOps Agent | Deployment & infrastructure |
 | 11 | Report Generator | Documentation & reports |
 | 12 | Code Reviewer | Code quality & best practices |
+| 13 | Context Gatherer | Proactive context gathering & clarification |
 
 ## 🎯 Skills
 
@@ -67,7 +68,7 @@ cat .claude/docs/NEW_PROJECT_SETUP.md
 
 ## ✅ Framework Status
 
-- **Agents:** 13/13 ✅ Project-agnostic
+- **Agents:** 14/14 ✅ Project-agnostic
 - **Skills:** 21/21 ✅ Reusable
 - **Documentation:** 11 guides ✅ Complete
 - **Deployment:** Ready ✅
