@@ -232,9 +232,9 @@ export default function AgentDemoPage() {
                 <strong>Try saying:</strong>
               </p>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• "Create a login form"</li>
-                <li>• "Build a dashboard"</li>
-                <li>• "Make a button component"</li>
+                <li>• &quot;Create a login form&quot;</li>
+                <li>• &quot;Build a dashboard&quot;</li>
+                <li>• &quot;Make a button component&quot;</li>
               </ul>
             </div>
           </motion.div>

@@ -141,7 +141,7 @@ export function ElementInspector({
           </div>
 
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Example: "Make it bigger", "Change color to green"
+            Example: &quot;Make it bigger&quot;, &quot;Change color to green&quot;
           </p>
         </div>
       </div>
