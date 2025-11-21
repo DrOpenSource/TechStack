@@ -21,8 +21,8 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: '/icons/icon-192x192.png',
-    apple: '/icons/icon-192x192.png',
+    icon: '/icon.svg',
+    apple: '/icon.svg',
   },
 };
 
@@ -51,7 +51,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="VibeCode" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="/icon.svg" />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ThemeProvider defaultTheme="system">
