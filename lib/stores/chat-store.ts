@@ -10,6 +10,11 @@ export interface ChatMessage {
     provider?: string;
     model?: string;
     tokens?: number;
+    hasQuestions?: boolean;
+    questionFlowId?: string;
+    hasCode?: boolean;
+    codeId?: string;
+    suggestions?: string[];
   };
 }
 

@@ -52,6 +52,8 @@ Maximize team efficiency through intelligent coordination, parallel execution, a
        ▼
 ┌──────────────────────────────────────────┐
 │  PHASE 2: GATHER CONTEXT                 │
+│  • Invoke context-gatherer (if needed)   │
+│  • Ask clarifying questions (2-5 max)    │
 │  • Invoke sub-agents (parallel)          │
 │  • Semantic search codebase              │
 │  • Load relevant skills                  │

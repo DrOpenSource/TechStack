@@ -13,9 +13,9 @@ const navItems = [
     path: "/projects",
   },
   {
-    icon: MessageSquare,
-    label: "Chat",
-    path: "/chat",
+    icon: Sparkles,
+    label: "Agent",
+    path: "/agent-demo",
   },
   {
     icon: Sparkles,
