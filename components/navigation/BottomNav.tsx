@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { MessageSquare, Eye, Folder, Settings, Sparkles, Layers } from "lucide-react";
+import { MessageSquare, Folder, Settings, Sparkles, Layers } from "lucide-react";
 import { useNavigationStore } from "@/lib/stores/navigationStore";
 import { haptics } from "@/lib/utils/haptics";
 
@@ -18,9 +18,9 @@ const navItems = [
     path: "/agent-demo",
   },
   {
-    icon: Layers,
-    label: "Canvas",
-    path: "/canvas-demo",
+    icon: Sparkles,
+    label: "Playground",
+    path: "/playground",
   },
   {
     icon: Settings,
