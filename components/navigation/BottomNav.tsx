@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { MessageSquare, Eye, Folder, Settings, Sparkles } from "lucide-react";
+import { MessageSquare, Folder, Settings, Sparkles, Layers } from "lucide-react";
 import { useNavigationStore } from "@/lib/stores/navigationStore";
 import { haptics } from "@/lib/utils/haptics";
 
