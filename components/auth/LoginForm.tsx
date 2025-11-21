@@ -48,7 +48,7 @@ export function LoginForm() {
 
     try {
       await login({ email, password });
-      router.push('/dashboard');
+      router.push('/select-team');
     } catch (err) {
       // Error is handled by the store
     }

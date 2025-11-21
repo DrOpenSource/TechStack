@@ -124,7 +124,7 @@ export function OTPInput({ email, onBack }: OTPInputProps) {
   const handleVerify = async (otpString: string) => {
     try {
       await verifyOTP({ email, otp: otpString });
-      router.push('/dashboard');
+      router.push('/select-team');
     } catch (err) {
       // Error is handled by the store
       // Clear OTP on error

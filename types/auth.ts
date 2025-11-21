@@ -27,6 +27,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  selectedAgents: string[];
 }
 
 export interface AuthActions {
@@ -35,6 +36,7 @@ export interface AuthActions {
   verifyOTP: (verification: OTPVerification) => Promise<void>;
   logout: () => void;
   clearError: () => void;
+  setSelectedAgents: (agentIds: string[]) => void;
 }
 
 export type AuthStore = AuthState & AuthActions;
