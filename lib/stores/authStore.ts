@@ -26,6 +26,7 @@ export const useAuthStore = create<AuthStore>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      selectedAgents: [],
 
       // Actions
       login: async (credentials: LoginCredentials) => {
@@ -127,11 +128,16 @@ export const useAuthStore = create<AuthStore>()(
           user: null,
           isAuthenticated: false,
           error: null,
+          selectedAgents: [],
         });
       },
 
       clearError: () => {
         set({ error: null });
+      },
+
+      setSelectedAgents: (agentIds: string[]) => {
+        set({ selectedAgents: agentIds });
       },
     }),
     {
@@ -139,6 +145,7 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
+        selectedAgents: state.selectedAgents,
       }),
     }
   )

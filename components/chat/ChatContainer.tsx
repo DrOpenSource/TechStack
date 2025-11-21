@@ -11,11 +11,14 @@ import { MessageSquare, Settings } from 'lucide-react';
 import { AIProvider, Message } from '@/types/chat';
 import { MOCK_MESSAGES, MOCK_RESPONSES } from '@/lib/mock/chatData';
 import { useProjectStore } from '@/lib/stores/project-store';
+import { useAuthStore } from '@/lib/stores/authStore';
 import { useExport } from '@/hooks/useExport';
+import { AI_AGENTS } from '@/lib/data/agents';
 import AIProviderSelector from './AIProviderSelector';
 import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 import { ExportButton, ExportModal } from '@/components/export';
+import { SelectedAgentsDisplay } from '@/components/agents/SelectedAgentsDisplay';
 
 interface ChatContainerProps {
   className?: string;
@@ -31,18 +34,34 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ className = '' }) 
   const { activeProject } = useProjectStore();
   const { exportProject, progress, isExporting } = useExport();
 
-  // Generate mock AI response
+  // Get selected agents from auth store
+  const { selectedAgents } = useAuthStore();
+
+  // Generate mock AI response with agent context
   const generateMockResponse = (userMessage: string): string => {
     const lowercaseMessage = userMessage.toLowerCase();
+
+    // Get selected agent objects
+    const selectedAgentObjects = AI_AGENTS.filter(a => selectedAgents.includes(a.id));
+
+    // Build agent context
+    let agentContext = '';
+    if (selectedAgentObjects.length > 0) {
+      agentContext = `\n\n**Team working on this:**\n${selectedAgentObjects.map(a => `- ${a.name} (${a.role})`).join('\n')}\n\n`;
+    }
 
     // Check for keywords
     for (const [keyword, response] of Object.entries(MOCK_RESPONSES)) {
       if (lowercaseMessage.includes(keyword.toLowerCase())) {
-        return response;
+        return agentContext + response;
       }
     }
 
-    // Default response
+    // Default response with agent context
+    if (selectedAgentObjects.length > 0) {
+      return agentContext + `Great! Our team is ready to help you build that. ${MOCK_RESPONSES.default}`;
+    }
+
     return MOCK_RESPONSES.default;
   };
 
@@ -157,6 +176,11 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ className = '' }) 
             selectedProvider={selectedProvider}
             onProviderChange={setSelectedProvider}
           />
+        </div>
+
+        {/* Selected Agents Display */}
+        <div className="px-4 pb-3 sm:px-6">
+          <SelectedAgentsDisplay />
         </div>
       </header>
 
