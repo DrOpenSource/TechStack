@@ -11,17 +11,20 @@ import { User, Bot, AlertCircle } from 'lucide-react';
 import { Message } from '@/types/chat';
 import CodeBlock from './CodeBlock';
 import { motion } from 'framer-motion';
+import { ComponentArtifact } from '@/components/artifacts/ComponentArtifact';
 
 interface MessageListProps {
   messages: Message[];
   isLoading?: boolean;
   className?: string;
+  onArtifactEdit?: (messageId: string, prompt: string) => void;
 }
 
 export const MessageList: React.FC<MessageListProps> = ({
   messages,
   isLoading = false,
   className = '',
+  onArtifactEdit,
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -165,6 +168,18 @@ export const MessageList: React.FC<MessageListProps> = ({
 
                   return null;
                 })}
+
+                {/* Artifact Rendering */}
+                {message.artifact && (
+                  <ComponentArtifact
+                    code={message.artifact.code}
+                    componentName={message.artifact.name}
+                    language={message.artifact.language}
+                    version={message.artifact.version}
+                    onEdit={onArtifactEdit ? (prompt) => onArtifactEdit(message.id, prompt) : undefined}
+                    className="mt-2"
+                  />
+                )}
               </div>
 
               {/* Metadata */}

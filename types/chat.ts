@@ -32,6 +32,14 @@ export interface ComponentPreview {
   previewUrl?: string;
 }
 
+export interface ComponentArtifact {
+  type: 'component';
+  code: string;
+  name: string;
+  language: 'tsx' | 'jsx';
+  version: number;
+}
+
 export interface MessageContent {
   type: MessageContentType;
   text?: string;
@@ -49,6 +57,7 @@ export interface Message {
   provider?: AIProvider;
   tokens?: number;
   cost?: number;
+  artifact?: ComponentArtifact;
 }
 
 export interface ChatSession {
