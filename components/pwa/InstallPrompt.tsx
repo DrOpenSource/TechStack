@@ -30,23 +30,52 @@ export default function InstallPrompt() {
       return;
     }
 
+    // Store the prompt globally to survive component unmounts
+    let savedPrompt: BeforeInstallPromptEvent | null = null;
+
     // Listen for beforeinstallprompt event
     const handler = (e: Event) => {
+      // Prevent the default browser install prompt
       e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      // Show prompt after 3 seconds
-      setTimeout(() => setShowPrompt(true), 3000);
+
+      const promptEvent = e as BeforeInstallPromptEvent;
+      savedPrompt = promptEvent;
+      setDeferredPrompt(promptEvent);
+
+      // Show prompt after 1 second (reduced from 3s for better UX)
+      setTimeout(() => {
+        // Only show if component is still mounted and page is visible
+        if (document.visibilityState === 'visible') {
+          setShowPrompt(true);
+        }
+      }, 1000);
+    };
+
+    // Handle visibility changes - don't show prompt if page is hidden
+    const visibilityHandler = () => {
+      if (document.visibilityState === 'hidden' && savedPrompt) {
+        // Page is hidden, reset the prompt state to avoid issues
+        setShowPrompt(false);
+      }
     };
 
     window.addEventListener('beforeinstallprompt', handler);
+    document.addEventListener('visibilitychange', visibilityHandler);
 
     // For iOS, show custom prompt if not in standalone mode
     if (isIOSDevice && !isInStandaloneMode && !dismissed) {
-      setTimeout(() => setShowPrompt(true), 3000);
+      setTimeout(() => {
+        if (document.visibilityState === 'visible') {
+          setShowPrompt(true);
+        }
+      }, 1000);
     }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
+      document.removeEventListener('visibilitychange', visibilityHandler);
+      // Note: We can't "cancel" the beforeinstallprompt, but we clean up our handlers
+      savedPrompt = null;
     };
   }, []);
 
@@ -55,15 +84,25 @@ export default function InstallPrompt() {
       return;
     }
 
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    try {
+      // Show the install prompt
+      await deferredPrompt.prompt();
 
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
+      // Wait for the user's response
+      const { outcome } = await deferredPrompt.userChoice;
+
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+    } catch (error) {
+      console.error('Error showing install prompt:', error);
+    } finally {
+      // Clean up
+      setDeferredPrompt(null);
+      setShowPrompt(false);
     }
-
-    setDeferredPrompt(null);
-    setShowPrompt(false);
   };
 
   const handleDismiss = () => {
