@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Download, X, Smartphone, Share } from 'lucide-react';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -13,6 +13,10 @@ export default function InstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+
+  // Track if we've called prompt() to satisfy Chrome's requirement
+  const promptCalledRef = useRef(false);
+  const deferredPromptRef = useRef<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     // Check if running in standalone mode
@@ -30,31 +34,25 @@ export default function InstallPrompt() {
       return;
     }
 
-    // Store the prompt globally to survive component unmounts
-    let savedPrompt: BeforeInstallPromptEvent | null = null;
-
     // Listen for beforeinstallprompt event
     const handler = (e: Event) => {
       // Prevent the default browser install prompt
       e.preventDefault();
 
       const promptEvent = e as BeforeInstallPromptEvent;
-      savedPrompt = promptEvent;
+      deferredPromptRef.current = promptEvent;
+      promptCalledRef.current = false; // Reset the flag
       setDeferredPrompt(promptEvent);
 
-      // Show prompt after 1 second (reduced from 3s for better UX)
-      setTimeout(() => {
-        // Only show if component is still mounted and page is visible
-        if (document.visibilityState === 'visible') {
-          setShowPrompt(true);
-        }
-      }, 1000);
+      // Show our custom banner immediately to ensure prompt() can be called
+      // If we delay and user navigates, we violate Chrome's requirement
+      setShowPrompt(true);
     };
 
     // Handle visibility changes - don't show prompt if page is hidden
     const visibilityHandler = () => {
-      if (document.visibilityState === 'hidden' && savedPrompt) {
-        // Page is hidden, reset the prompt state to avoid issues
+      if (document.visibilityState === 'hidden') {
+        // Page is hidden, hide the prompt UI
         setShowPrompt(false);
       }
     };
@@ -64,18 +62,24 @@ export default function InstallPrompt() {
 
     // For iOS, show custom prompt if not in standalone mode
     if (isIOSDevice && !isInStandaloneMode && !dismissed) {
-      setTimeout(() => {
-        if (document.visibilityState === 'visible') {
-          setShowPrompt(true);
-        }
-      }, 1000);
+      setShowPrompt(true);
     }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
       document.removeEventListener('visibilitychange', visibilityHandler);
-      // Note: We can't "cancel" the beforeinstallprompt, but we clean up our handlers
-      savedPrompt = null;
+
+      // CRITICAL: If we called preventDefault() but never called prompt(),
+      // we must call prompt() now to satisfy Chrome's requirement
+      if (deferredPromptRef.current && !promptCalledRef.current) {
+        console.log('Calling prompt() on cleanup to satisfy Chrome requirement');
+        deferredPromptRef.current.prompt().catch((err) => {
+          console.log('Prompt call in cleanup failed (expected):', err);
+        });
+        promptCalledRef.current = true;
+      }
+
+      deferredPromptRef.current = null;
     };
   }, []);
 
@@ -85,6 +89,9 @@ export default function InstallPrompt() {
     }
 
     try {
+      // Mark that we're calling prompt() to satisfy Chrome's requirement
+      promptCalledRef.current = true;
+
       // Show the install prompt
       await deferredPrompt.prompt();
 
@@ -101,6 +108,7 @@ export default function InstallPrompt() {
     } finally {
       // Clean up
       setDeferredPrompt(null);
+      deferredPromptRef.current = null;
       setShowPrompt(false);
     }
   };
@@ -108,6 +116,19 @@ export default function InstallPrompt() {
   const handleDismiss = () => {
     setShowPrompt(false);
     localStorage.setItem('pwa-install-dismissed', 'true');
+
+    // We must call prompt() to satisfy Chrome's requirement even if user dismissed
+    // This call may do nothing or fail, which is fine
+    if (deferredPromptRef.current && !promptCalledRef.current) {
+      promptCalledRef.current = true;
+      deferredPromptRef.current.prompt().catch(() => {
+        // Silently ignore - user dismissed our banner anyway
+      });
+    }
+
+    // Clean up
+    setDeferredPrompt(null);
+    deferredPromptRef.current = null;
   };
 
   if (isStandalone || !showPrompt) {
