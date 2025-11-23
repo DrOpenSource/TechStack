@@ -2,23 +2,23 @@
 
 import { ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/lib/stores/user-store";
+import { useAuthStore } from "@/lib/stores/authStore";
 import { BottomNav } from "@/components/navigation/BottomNav";
 import { Sidebar } from "@/components/navigation/Sidebar";
 import { SwipeableDrawer } from "@/components/navigation/SwipeableDrawer";
 
 export default function WorkspaceLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const user = useUserStore((state) => state.user);
+  const { user, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     // Redirect to login if not authenticated
-    if (!user) {
+    if (!isAuthenticated || !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [isAuthenticated, user, router]);
 
-  if (!user) {
+  if (!isAuthenticated || !user) {
     return null;
   }
 

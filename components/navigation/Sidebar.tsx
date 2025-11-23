@@ -15,7 +15,7 @@ import {
   Layers,
 } from "lucide-react";
 import { useNavigationStore } from "@/lib/stores/navigationStore";
-import { useUserStore } from "@/lib/stores/user-store";
+import { useAuthStore } from "@/lib/stores/authStore";
 
 const navItems = [
   {
@@ -58,8 +58,7 @@ export function Sidebar() {
   );
   const toggleSidebar = useNavigationStore((state) => state.toggleSidebar);
   const setRoute = useNavigationStore((state) => state.setRoute);
-  const user = useUserStore((state) => state.user);
-  const logout = useUserStore((state) => state.logout);
+  const { user, logout } = useAuthStore();
 
   const handleNavClick = (path: string) => {
     if (pathname !== path) {
