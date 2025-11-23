@@ -2,9 +2,12 @@
  * Format utilities for dates, numbers, and strings
  */
 
-export function formatDate(date: Date): string {
+export function formatDate(date: Date | string): string {
+  // Convert string to Date if needed (handles localStorage serialization)
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+
   const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
 
   if (diffInSeconds < 60) {
     return "just now";
@@ -28,8 +31,8 @@ export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
-    year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
-  }).format(date);
+    year: dateObj.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
+  }).format(dateObj);
 }
 
 export function formatFileSize(bytes: number): string {
