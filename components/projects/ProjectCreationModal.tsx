@@ -10,7 +10,7 @@ import { X, Loader2, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils/cn';
 import { validateProjectName } from '@/lib/utils/validation';
-import { useProjectsStore } from '@/lib/stores/projectsStore';
+import { useProjectStore } from '@/lib/stores/project-store';
 import { TemplateGallery } from './TemplateGallery';
 import type { ProjectTemplate } from '@/types/templates';
 
@@ -26,7 +26,8 @@ export function ProjectCreationModal({
   defaultTemplate,
 }: ProjectCreationModalProps) {
   const router = useRouter();
-  const { createProject, isLoading } = useProjectsStore();
+  const { createProject } = useProjectStore();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [step, setStep] = useState<'template' | 'details'>('template');
   const [selectedTemplate, setSelectedTemplate] = useState<ProjectTemplate | undefined>(
@@ -79,17 +80,21 @@ export function ProjectCreationModal({
     }
 
     try {
-      const project = await createProject({
+      setIsLoading(true);
+
+      // Create project with template info in description
+      createProject({
         name: projectName,
-        templateId: selectedTemplate.id,
-        initialPrompt: initialPrompt || undefined,
+        description: selectedTemplate.name + (initialPrompt ? `: ${initialPrompt}` : ''),
       });
 
-      // Navigate to the new project
-      router.push(`/projects/${project.id}`);
+      // Navigate to chat page where the active project will be available
+      router.push('/chat');
       onClose();
     } catch (err) {
-      // Error is handled by the store
+      console.error('Failed to create project:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 

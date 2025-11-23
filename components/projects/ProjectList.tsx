@@ -19,9 +19,9 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { formatDate } from '@/lib/utils/format';
-import { useProjectsStore } from '@/lib/stores/projectsStore';
-import { getTemplateById } from '@/lib/templates/templateDefinitions';
-import type { Project, ViewMode } from '@/types/templates';
+import { useProjectStore } from '@/lib/stores/project-store';
+import type { Project } from '@/lib/stores/project-store';
+import type { ViewMode } from '@/types/templates';
 
 interface ProjectListProps {
   onCreateProject: () => void;
@@ -29,15 +29,16 @@ interface ProjectListProps {
 
 export function ProjectList({ onCreateProject }: ProjectListProps) {
   const router = useRouter();
-  const { projects, openProject, deleteProject, archiveProject } = useProjectsStore();
+  const { projects, setActiveProject, deleteProject } = useProjectStore();
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  const activeProjects = projects.filter((p) => p.status === 'active');
+  // Filter out archived projects if we add that property
+  const activeProjects = projects;
 
   const handleOpenProject = (project: Project) => {
-    openProject(project.id);
-    router.push(`/projects/${project.id}`);
+    setActiveProject(project.id);
+    router.push('/chat');
   };
 
   const handleDelete = (e: React.MouseEvent, projectId: string) => {
@@ -50,7 +51,8 @@ export function ProjectList({ onCreateProject }: ProjectListProps) {
 
   const handleArchive = (e: React.MouseEvent, projectId: string) => {
     e.stopPropagation();
-    archiveProject(projectId);
+    // TODO: Add archive functionality to useProjectStore
+    console.log('Archive project:', projectId);
     setOpenMenuId(null);
   };
 
@@ -133,7 +135,8 @@ export function ProjectList({ onCreateProject }: ProjectListProps) {
         )}
       >
         {activeProjects.map((project) => {
-          const template = getTemplateById(project.templateId);
+          // Template is now optional since useProjectStore doesn't track it
+          const template = undefined;
           return (
             <ProjectCard
               key={project.id}
