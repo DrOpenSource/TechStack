@@ -10,7 +10,7 @@ import {
   Menu,
 } from "lucide-react";
 import { useNavigationStore } from "@/lib/stores/navigationStore";
-import { useUserStore } from "@/lib/stores/user-store";
+import { useAuthStore } from "@/lib/stores/authStore";
 import { haptics } from "@/lib/utils/haptics";
 import { useState } from "react";
 
@@ -24,7 +24,7 @@ export function TopBar({ title, showBack = false, actions }: TopBarProps) {
   const router = useRouter();
   const pageTitle = useNavigationStore((state) => state.pageTitle);
   const openDrawer = useNavigationStore((state) => state.openDrawer);
-  const user = useUserStore((state) => state.user);
+  const { user } = useAuthStore();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 

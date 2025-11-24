@@ -3,12 +3,12 @@
 import { motion } from "framer-motion";
 import { LogOut, Moon, Sun, Sparkles, User, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/lib/stores/user-store";
+import { useAuthStore } from "@/lib/stores/authStore";
 import { useAIProviderStore } from "@/lib/stores/ai-provider-store";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, logout } = useUserStore();
+  const { user, logout } = useAuthStore();
   const { config, isMockMode, setProvider, setMockMode } = useAIProviderStore();
 
   const handleLogout = () => {

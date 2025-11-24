@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useNavigationStore } from "@/lib/stores/navigationStore";
-import { useUserStore } from "@/lib/stores/user-store";
+import { useAuthStore } from "@/lib/stores/authStore";
 import { useRouter } from "next/navigation";
 import { haptics } from "@/lib/utils/haptics";
 
@@ -43,8 +43,7 @@ const menuItems = [
 export function SwipeableDrawer() {
   const isDrawerOpen = useNavigationStore((state) => state.isDrawerOpen);
   const closeDrawer = useNavigationStore((state) => state.closeDrawer);
-  const user = useUserStore((state) => state.user);
-  const logout = useUserStore((state) => state.logout);
+  const { user, logout } = useAuthStore();
   const router = useRouter();
   const drawerRef = useRef<HTMLDivElement>(null);
 
